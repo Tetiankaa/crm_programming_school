@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { ETableName } from './enums/table-name.enum';
+import { ManagerEntity } from './manager.entity';
 import { BaseModel } from './models/base.model';
-import { UserEntity } from './user.entity';
 
 @Entity({ name: ETableName.REFRESH_TOKENS })
 export class RefreshTokenEntity extends BaseModel {
@@ -13,9 +13,9 @@ export class RefreshTokenEntity extends BaseModel {
   deviceId: string;
 
   @Column()
-  user_id: string;
+  manager_id: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.refreshTokens)
-  @JoinColumn({ name: 'user_id' })
-  user?: UserEntity;
+  @ManyToOne(() => ManagerEntity, (entity) => entity.refreshTokens)
+  @JoinColumn({ name: 'manager_id' })
+  manager?: ManagerEntity;
 }

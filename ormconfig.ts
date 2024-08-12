@@ -10,7 +10,7 @@ dotenv.config({ path: './environments/local.env' });
 const databaseConfig = getter().database;
 
 export default new DataSource({
-  type: 'postgres',
+  type: 'mysql',
   host: databaseConfig.host,
   port: databaseConfig.port,
   username: databaseConfig.username,

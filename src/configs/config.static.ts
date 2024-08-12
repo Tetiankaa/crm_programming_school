@@ -13,5 +13,6 @@ class ConfigStatic {
 
 const environment = process.env.APP_ENVIRONMENT || 'local';
 dotenv.config({ path: `environments/${environment}.env` });
+
 const ConfigStaticService = new ConfigStatic();
 export { ConfigStaticService };

@@ -1,46 +1,66 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
-import { ECurrency } from '../entities/enums/currency.enum';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as process from "node:process";
 
 export class insertInitialData20240801000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`CREATE TABLE "brands" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "name" text NOT NULL, CONSTRAINT "UQ_96db6bbbaa6f23cad26871339b6" UNIQUE ("name"), CONSTRAINT "PK_b0c437120b624da1034a81fc561" PRIMARY KEY ("id"))`);
-    await queryRunner.query(`CREATE TABLE "models" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "name" text NOT NULL, "brand_id" uuid NOT NULL, CONSTRAINT "PK_ef9ed7160ea69013636466bf2d5" PRIMARY KEY ("id"))`);
-    await queryRunner.query(`CREATE TYPE "public"."currencies_value_enum" AS ENUM('USD', 'EUR', 'UAH')`);
-    await queryRunner.query(`CREATE TABLE "currencies" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "value" "public"."currencies_value_enum" NOT NULL, CONSTRAINT "PK_d528c54860c4182db13548e08c4" PRIMARY KEY ("id"))`);
-    await queryRunner.query(`ALTER TABLE "models" ADD CONSTRAINT "FK_f2b1673c6665816ff753e81d1a0" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
 
-    await queryRunner.query(`
-      INSERT INTO brands (id, name, "createdAt", "updatedAt") VALUES
-      (uuid_generate_v4(), 'BMW', now(), now()),
-      (uuid_generate_v4(), 'Lanos', now(), now());
-    `);
+    const dumpFilePath = path.resolve(__dirname, path.join(process.cwd(), 'orders.sql'));
+    const dumpFile = fs.readFileSync(dumpFilePath, { encoding: 'utf-8' });
 
-    const bmw = await queryRunner.query(`SELECT id FROM brands WHERE name = 'BMW'`);
-    const lanos = await queryRunner.query(`SELECT id FROM brands WHERE name = 'Lanos'`);
+    const queries = dumpFile.split(';').filter(query => query.trim());
+    for (const query of queries) {
+      await queryRunner.query(query);
+    }
 
-    await queryRunner.query(`
-      INSERT INTO models (id, name, brand_id, "createdAt", "updatedAt") VALUES
-      (uuid_generate_v4(), 'X5', '${bmw[0].id}', now(), now()),
-      (uuid_generate_v4(), 'Daewoo', '${lanos[0].id}', now(), now());
-    `);
+    await queryRunner.query(`UPDATE orders SET course = NULL WHERE course NOT IN ('FS', 'QACX', 'JCX', 'JSCX', 'FE', 'PCX') OR course IS NULL`);
+    await queryRunner.query(`UPDATE orders SET course_format = NULL WHERE course_format NOT IN ('static', 'online') OR course_format IS NULL`);
+    await queryRunner.query(`UPDATE orders SET course_type = NULL WHERE course_type NOT IN ('pro', 'minimal', 'premium', 'incubator', 'vip') OR course_type IS NULL`);
+    await queryRunner.query(`UPDATE orders SET status = NULL WHERE status NOT IN ('In work', 'New', 'Agree', 'Disagree', 'Dubbing') OR status IS NULL`);
 
-    await queryRunner.query(`
-          INSERT INTO currencies (id, value) VALUES 
-          (uuid_generate_v4(), '${ECurrency.UAH}'), 
-          (uuid_generate_v4(), '${ECurrency.USD}'), 
-          (uuid_generate_v4(), '${ECurrency.EUR}');
-        `);
+    await queryRunner.query(`ALTER TABLE orders MODIFY course ENUM('FS', 'QACX', 'JCX', 'JSCX', 'FE', 'PCX') NULL`);
+    await queryRunner.query(`ALTER TABLE orders MODIFY course_format ENUM('static', 'online') NULL`);
+    await queryRunner.query(`ALTER TABLE orders MODIFY course_type ENUM('pro', 'minimal', 'premium', 'incubator', 'vip') NULL`);
+    await queryRunner.query(`ALTER TABLE orders MODIFY status ENUM('In work', 'New', 'Agree', 'Disagree', 'Dubbing') NULL`);
+
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`created_at\` datetime(6) NULL DEFAULT CURRENT_TIMESTAMP(6)`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`name\` text NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`surname\` text NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`email\` text NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`phone\` text NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`utm\` text NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` MODIFY \`msg\` text NULL`);
+
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE "models"`);
-    await queryRunner.query(`DROP TABLE "brands"`);
-    await queryRunner.query(`DELETE FROM models WHERE name IN ('X5', 'Daewoo')`);
-    await queryRunner.query(`DELETE FROM brands WHERE name IN ('BMW', 'Lanos')`);
-    await queryRunner.query(`DROP TABLE "currencies"`);
-    await queryRunner.query(`DROP TYPE "public"."currencies_value_enum"`);
-    await queryRunner.query(`
-          DELETE FROM currencies WHERE value IN ('${ECurrency.UAH}', '${ECurrency.USD}', '${ECurrency.EUR}');
-        `);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`msg\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`msg\` varchar(100) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`utm\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`utm\` varchar(100) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`status\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`status\` varchar(15) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`course_type\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`course_type\` varchar(100) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`course_format\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`course_format\` varchar(15) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`course\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`course\` varchar(10) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`phone\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`phone\` varchar(12) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`email\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`email\` varchar(100) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`surname\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`surname\` varchar(25) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`name\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`name\` varchar(25) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` CHANGE \`created_at\` \`created_at\` datetime(6) NULL`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP COLUMN \`id\``);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD \`id\` bigint NOT NULL AUTO_INCREMENT`);
+    await queryRunner.query(`ALTER TABLE \`orders\` ADD PRIMARY KEY (\`id\`)`);
+    await queryRunner.query(`ALTER TABLE \`orders\` CHANGE \`id\` \`id\` bigint NOT NULL AUTO_INCREMENT`);
+    await queryRunner.query(`ALTER TABLE \`orders\` DROP INDEX \`IDX_c23c7d2f3f13590a845802393d\``);
+    await queryRunner.query(`DROP TABLE IF EXISTS orders`);
   }
 }

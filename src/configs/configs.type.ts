@@ -1,16 +1,17 @@
 export type Configs = {
   app: AppConfig;
   database: DatabaseConfig;
+  security: SecurityConfig;
   redis: RedisConfig;
   jwt: JWTConfig;
-  security: SecurityConfig;
-  actionToken: ActionTokenConfig;
-  operations: OperationsConfig;
+  // actionToken: ActionTokenConfig;
+  // operations: OperationsConfig;
 };
 
 export type AppConfig = {
   port: number;
   host: string;
+  swagger_url_path: string;
 };
 export type DatabaseConfig = {
   port: number;
@@ -33,20 +34,17 @@ export type JWTConfig = {
 export type SecurityConfig = {
   hashPasswordRounds: number;
   defaultManagerPassword: string;
-  defaultDealershipWorkerPassword: string;
   admin_email: string;
-  manager_email: string;
-  max_profanity_edits: number;
-  max_upload_images: number;
+  admin_password: string;
 };
-export type ActionTokenConfig = {
-  setup_manager_secret: string;
-  setup_manager_expires_in: string;
-  forgot_password_secret: string;
-  forgot_password_expires_in: string;
-  setup_dealership_worker_secret: string;
-  setup_dealership_worker_expires_in: string;
-};
-export type OperationsConfig = {
-  batch_size: number;
-};
+// export type ActionTokenConfig = {
+//   setup_manager_secret: string;
+//   setup_manager_expires_in: string;
+//   forgot_password_secret: string;
+//   forgot_password_expires_in: string;
+//   setup_dealership_worker_secret: string;
+//   setup_dealership_worker_expires_in: string;
+// };
+// export type OperationsConfig = {
+//   batch_size: number;
+// };
