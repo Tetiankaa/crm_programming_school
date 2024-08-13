@@ -6,12 +6,15 @@ import { EntityManager, Repository } from 'typeorm';
 
 import { errorMessages } from '../../../common/constants/error-messages.constant';
 import { Configs, SecurityConfig } from '../../../configs/configs.type';
+import { EUserRole } from '../../../database/entities/enums/user-role.enum';
 import { ManagerEntity } from '../../../database/entities/manager.entity';
 import { RefreshTokenEntity } from '../../../database/entities/refresh-token.entity';
+import { CurrentUser } from '../decorators/current-user.decorator';
 import { LoginReqDto } from '../dto/req/login.req.dto';
 import { AuthResDto } from '../dto/res/auth.res.dto';
 import { TokenPairResDto } from '../dto/res/token-pair.res.dto';
 import { ITokenPair } from '../interfaces/token.interface';
+import { IUserData } from '../interfaces/user-data.interface';
 import { AuthMapper } from './auth.mapper';
 import { AuthCacheService } from './auth-cache.service';
 import { TokenService } from './token.service';
@@ -37,7 +40,7 @@ export class AuthService {
 
       const manager = await managerRepository.findOneBy({ email: dto.email });
 
-      if (!manager) {
+      if (!manager || !manager.is_active) {
         throw new UnauthorizedException(errorMessages.WRONG_EMAIL_OR_PASSWORD);
       }
 
@@ -55,7 +58,8 @@ export class AuthService {
       });
 
       const tokenPair = await this.generateAndSaveTokenPair(
-        manager,
+        manager.id,
+        manager.user_role,
         dto.deviceId,
         refreshTokenRepository,
       );
@@ -69,18 +73,41 @@ export class AuthService {
     });
   }
 
+  public async refresh(userData: IUserData): Promise<TokenPairResDto> {
+    return await this.entityManager.transaction(async (entityManager) => {
+      const refreshTokenRepository =
+        entityManager.getRepository(RefreshTokenEntity);
+
+      await refreshTokenRepository.delete({
+        deviceId: userData.deviceId,
+        manager_id: userData.userId,
+      });
+
+      const tokenPair = await this.generateAndSaveTokenPair(
+        userData.userId,
+        userData.role,
+        userData.deviceId,
+        refreshTokenRepository,
+      );
+
+      return AuthMapper.toTokenResponseDto(tokenPair);
+    });
+  }
+
   private async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, this.securityConfig.hashPasswordRounds);
   }
 
   private async generateAndSaveTokenPair(
-    manager: ManagerEntity,
+    managerId: string,
+    role: EUserRole,
     deviceId: string,
     repository: Repository<RefreshTokenEntity>,
   ): Promise<ITokenPair> {
     const tokenPair = await this.tokenService.generateTokenPair({
-      role: manager.user_role,
-      manager_id: manager.id,
+      role,
+      manager_id: managerId,
+      deviceId,
     });
 
     await Promise.all([
@@ -88,13 +115,13 @@ export class AuthService {
         repository.create({
           refreshToken: tokenPair.refreshToken,
           deviceId,
-          manager_id: manager.id,
+          manager_id: managerId,
         }),
       ),
       this.authCacheService.saveToken(
         tokenPair.accessToken,
         deviceId,
-        manager.id,
+        managerId,
       ),
     ]);
 

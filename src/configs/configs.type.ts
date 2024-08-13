@@ -4,8 +4,6 @@ export type Configs = {
   security: SecurityConfig;
   redis: RedisConfig;
   jwt: JWTConfig;
-  // actionToken: ActionTokenConfig;
-  // operations: OperationsConfig;
 };
 
 export type AppConfig = {
@@ -37,14 +35,3 @@ export type SecurityConfig = {
   admin_email: string;
   admin_password: string;
 };
-// export type ActionTokenConfig = {
-//   setup_manager_secret: string;
-//   setup_manager_expires_in: string;
-//   forgot_password_secret: string;
-//   forgot_password_expires_in: string;
-//   setup_dealership_worker_secret: string;
-//   setup_dealership_worker_expires_in: string;
-// };
-// export type OperationsConfig = {
-//   batch_size: number;
-// };

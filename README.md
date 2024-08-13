@@ -21,12 +21,8 @@ Ensure Docker Desktop is running on your computer.
 # run the following command to start the Docker containers:
 $ npm run start:docker:db
 
-# run Existing Migration
+# run existing migrations
 npm run migration:run 
-
-# generate migration for creating all other tables
-npm run migration:generate -name=createTables
-npm run migration:run
 
 # start the Development Server
 $ npm run start:dev

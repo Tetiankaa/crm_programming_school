@@ -3,6 +3,7 @@ import { ManagerMapper } from '../../manager/services/manager.mapper';
 import { AuthResDto } from '../dto/res/auth.res.dto';
 import { TokenPairResDto } from '../dto/res/token-pair.res.dto';
 import { ITokenPair } from '../interfaces/token.interface';
+import { IUserData } from '../interfaces/user-data.interface';
 
 export class AuthMapper {
   public static toDto(
@@ -14,8 +15,19 @@ export class AuthMapper {
       manager: ManagerMapper.toDto(entity),
     };
   }
+  public static toUserDataDto(
+    entity: ManagerEntity,
+    deviceId: string,
+  ): IUserData {
+    return {
+      userId: entity.id,
+      deviceId,
+      role: entity.user_role,
+      email: entity.email,
+    };
+  }
 
-  private static toTokenResponseDto(tokenPair: ITokenPair): TokenPairResDto {
+  public static toTokenResponseDto(tokenPair: ITokenPair): TokenPairResDto {
     return {
       accessToken: tokenPair.accessToken,
       refreshToken: tokenPair.refreshToken,

@@ -4,4 +4,5 @@ export enum ETableName {
   COMMENTS = 'comments',
   REFRESH_TOKENS = 'refresh_tokens',
   ACTION_TOKENS = 'action_tokens',
+  GROUPS = 'groups',
 }

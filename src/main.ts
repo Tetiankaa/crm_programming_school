@@ -4,14 +4,18 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { AppConfig } from './configs/configs.type';
+import { GlobalExceptionFilter } from './common/http/global-exception.filter';
 import { createValidationExceptionFactory } from './common/validation/validation-exception.factory';
+import { AppConfig } from './configs/configs.type';
+import { LoggerService } from './modules/logger/services/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
   const appConfig = configService.get<AppConfig>('app');
+
+  app.useGlobalFilters(new GlobalExceptionFilter(new LoggerService()));
 
   const config = new DocumentBuilder()
     .setTitle('CRM programming school')

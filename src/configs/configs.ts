@@ -37,18 +37,4 @@ export default (): Configs => ({
     access_secret: process.env.JWT_ACCESS_SECRET,
     refresh_secret: process.env.JWT_REFRESH_SECRET,
   },
-  // actionToken: {
-  //   setup_manager_secret: process.env.ACTION_TOKEN_SETUP_MANAGER_SECRET,
-  //   setup_manager_expires_in: process.env.ACTION_TOKEN_SETUP_MANAGER_EXPIRES_IN,
-  //   forgot_password_secret: process.env.ACTION_TOKEN_FORGOT_PASSWORD_SECRET,
-  //   forgot_password_expires_in:
-  //     process.env.ACTION_TOKEN_FORGOT_PASSWORD_EXPIRES_IN,
-  //   setup_dealership_worker_secret:
-  //     process.env.ACTION_TOKEN_SETUP_DEALERSHIP_WORKER_SECRET,
-  //   setup_dealership_worker_expires_in:
-  //     process.env.ACTION_TOKEN_SETUP_DEALERSHIP_WORKER_EXPIRES_IN,
-  // },
-  // operations: {
-  //   batch_size: parseInt(process.env.BATCH_SIZE),
-  // },
 });

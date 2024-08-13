@@ -8,6 +8,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ManagerModule } from './modules/manager/manager.module';
 import { RedisModule } from './modules/redis/redis.module';
 import { LoggerModule } from './modules/logger/logger.module';
+import { OrderModule } from './modules/order/order.module';
+import { PaginationModule } from './modules/pagination/pagination.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { LoggerModule } from './modules/logger/logger.module';
     LoggerModule,
     AuthModule,
     ManagerModule,
+    OrderModule,
+    PaginationModule,
   ],
   controllers: [],
   providers: [],

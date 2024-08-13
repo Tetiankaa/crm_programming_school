@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 
 import { LoggerService } from '../../logger/services/logger.service';
-import { REDIS_CLIENT } from '../constants/redis.constants';
+import { REDIS_CLIENT } from '../constants/redis.constant';
 
 @Injectable()
 export class RedisService {
@@ -17,6 +17,14 @@ export class RedisService {
       const multi = this.redisClient.multi();
       commands.forEach((command) => multi[command[0]](...command.slice(1)));
       await multi.exec();
+    } catch (error) {
+      this.loggerService.error(error);
+    }
+  }
+
+  public async sMembers(key: string): Promise<string[]> {
+    try {
+      return await this.redisClient.smembers(key);
     } catch (error) {
       this.loggerService.error(error);
     }
