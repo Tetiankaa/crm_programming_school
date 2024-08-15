@@ -30,8 +30,8 @@ export class ManagerEntity extends BaseModel {
   @Column({ type: 'enum', enum: EUserRole })
   user_role: EUserRole;
 
-  @OneToOne(() => OrderEntity, (entity) => entity.manager)
-  order?: OrderEntity;
+  @OneToMany(() => OrderEntity, (entity) => entity.manager)
+  orders?: OrderEntity[];
 
   @OneToMany(() => RefreshTokenEntity, (entity) => entity.manager)
   refreshTokens?: RefreshTokenEntity[];

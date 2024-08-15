@@ -1,15 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, Matches } from 'class-validator';
+import { IsOptional, IsString, Validate } from 'class-validator';
 
+import { IsValidOrderField } from '../../../../common/validators/is-valid-order-field.validator';
+import {
+  EOrderFieldsAsc,
+  EOrderFieldsDesc,
+} from '../../models/enums/order-fields.enum';
 import { BasePaginationReqDto } from './base-pagination.req.dto';
 
 export class QueryReqDto extends BasePaginationReqDto {
-  @ApiProperty({ required: false, default: '-id' })
+  @ApiProperty({
+    required: false,
+    default: EOrderFieldsDesc.ID,
+    enum: [
+      ...Object.values(EOrderFieldsAsc),
+      ...Object.values(EOrderFieldsDesc),
+    ],
+    description:
+      'Use a "-" before the field name for descending order (e.g., "-id" for descending order by ID)',
+  })
   @IsString()
   @IsOptional()
-  @Matches(
-    /^-?(id|name|surname|email|phone|age|course|course_format|course_type|status|sum|alreadyPaid|group|created_at|manager)$/i,
-    { message: 'Invalid order field' },
-  )
-  order: string = '-id';
+  @Validate(IsValidOrderField)
+  order?: EOrderFieldsDesc | EOrderFieldsAsc = EOrderFieldsDesc.ID;
 }

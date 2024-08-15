@@ -1,13 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class PaginationResDto {
-
+export class PaginationResDto<T> {
   @ApiProperty({
     isArray: true,
     description: 'Array of data items',
-    type: any[],
   })
-  data: any[];
+  data: T[];
 
   @ApiProperty({
     example: 1,

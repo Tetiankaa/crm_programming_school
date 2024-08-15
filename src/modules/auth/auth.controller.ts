@@ -25,11 +25,11 @@ export class AuthController {
   @Post('login')
   @SkipAuth()
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiCreatedResponse({
     description: 'Logged in successfully',
     type: AuthResDto,
   })
-  @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiOperation({
     description:
       'Allows a manager to log in to the system by providing valid credentials.',

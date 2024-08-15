@@ -4,4 +4,5 @@ export const errorMessages = {
   INTERNAL_SERVER_ERROR: 'Internal Server Error',
   INVALID_TOKEN: 'Token is not valid',
   NO_TOKEN_PROVIDED: 'No token provided',
+  INVALID_ORDER_FIELD: 'Invalid order field',
 };

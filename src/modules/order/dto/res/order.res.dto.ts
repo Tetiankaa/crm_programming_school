@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+
 import { ECourse } from '../../../../database/entities/enums/course.enum';
 import { ECourseFormat } from '../../../../database/entities/enums/course-format.enum';
 import { ECourseType } from '../../../../database/entities/enums/course-type.enum';
@@ -104,13 +105,6 @@ export class OrderResDto {
     description: 'The name of the manager handling the order',
   })
   public readonly manager_name: string;
-
-  @ApiProperty({
-    type: CommentEntity,
-    description: 'The comment associated with the order',
-    required: false,  // Since the comment field is optional
-  })
-  public readonly comment?: CommentEntity;
 
   @ApiProperty({
     example: 'sept-2023',

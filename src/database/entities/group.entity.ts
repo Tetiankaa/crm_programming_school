@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { ETableName } from './enums/table-name.enum';
 import { BaseModel } from './models/base.model';
@@ -9,10 +9,6 @@ export class GroupEntity extends BaseModel {
   @Column({ type: 'text' })
   name: string;
 
-  @Column()
-  order_id: string;
-
-  @ManyToOne(() => OrderEntity, (entity) => entity.group)
-  @JoinColumn({ name: 'order_id' })
+  @OneToMany(() => OrderEntity, (entity) => entity.group)
   orders?: OrderEntity[];
 }
