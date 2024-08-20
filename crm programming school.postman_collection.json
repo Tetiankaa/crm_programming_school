@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "fcd575e4-c90d-41f1-b8b6-6ad2811fc9a1",
 		"name": "crm programming school",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "25931697"
 	},
 	"item": [
@@ -10,7 +10,17 @@
 			"name": "login",
 			"request": {
 				"method": "POST",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"admin@gmail.com \",\r\n    \"password\":\"admin\",\r\n    \"deviceId\":\"1111-fhhg-54t4\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://0.0.0.0:3000/auth/login"
 			},
 			"response": []
 		},
@@ -19,31 +29,13 @@
 			"request": {
 				"auth": {
 					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJtYW5hZ2VyX2lkIjoxLCJkZXZpY2VJZCI6ImVmYWYiLCJpYXQiOjE3MjM1NTIxMzgsImV4cCI6MTcyMzYzODUzOH0.19fSff-yp98qlPS-LA6hh0_fE1wwjF-_aoIkvUM_nvU",
-							"type": "string"
-						}
-					]
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJtYW5hZ2VyX2lkIjoxLCJkZXZpY2VJZCI6ImVmYWYiLCJpYXQiOjE3MjM1NTIxMzgsImV4cCI6MTcyMzYzODUzOH0.19fSff-yp98qlPS-LA6hh0_fE1wwjF-_aoIkvUM_nvU"
+					}
 				},
 				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "http://0.0.0.0:3000/auth/refresh",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "3000",
-					"path": [
-						"auth",
-						"refresh"
-					]
-				}
+				"url": "http://0.0.0.0:3000/auth/refresh"
 			},
 			"response": []
 		},
@@ -52,13 +44,9 @@
 			"request": {
 				"auth": {
 					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJtYW5hZ2VyX2lkIjoxLCJkZXZpY2VJZCI6ImlwaG9uZSIsImlhdCI6MTcyMzcyNTQ1NSwiZXhwIjoxNzIzNzYxNDU1fQ.qAp3i2aKeQThlwxUTddEUdFnQuYtM-33TnuzIlGnMXo",
-							"type": "string"
-						}
-					]
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJtYW5hZ2VyX2lkIjoxLCJkZXZpY2VJZCI6ImlwaG9uZSIsImlhdCI6MTcyMzcyNTQ1NSwiZXhwIjoxNzIzNzYxNDU1fQ.qAp3i2aKeQThlwxUTddEUdFnQuYtM-33TnuzIlGnMXo"
+					}
 				},
 				"method": "GET",
 				"header": [],
