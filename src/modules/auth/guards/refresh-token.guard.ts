@@ -38,7 +38,7 @@ export class RefreshTokenGuard implements CanActivate {
     if (!payload) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
-    const isTokenExists = this.refreshTokenRepository.exists({
+    const isTokenExists = await this.refreshTokenRepository.exists({
       where: { refreshToken },
     });
 
