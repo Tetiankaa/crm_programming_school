@@ -25,7 +25,7 @@ export class BaseManagerResDto {
     example: 'user@gmail.com',
     description: 'The email of the manager',
   })
-  email: string;
+    email: string;
 
   @ApiProperty({
     example: false,

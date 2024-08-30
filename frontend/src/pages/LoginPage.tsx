@@ -1,4 +1,4 @@
-import { Login } from '../components/AuthContainer'
+import { Login } from '../components'
 import style from './LoginPage.module.css'
 
 const LoginPage = () => {

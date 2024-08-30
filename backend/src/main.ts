@@ -8,7 +8,6 @@ import { GlobalExceptionFilter } from './common/http/global-exception.filter';
 import { createValidationExceptionFactory } from './common/validation/validation-exception.factory';
 import { AppConfig } from './configs/configs.type';
 import { LoggerService } from './modules/logger/services/logger.service';
-import { environments } from 'eslint-plugin-prettier'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
