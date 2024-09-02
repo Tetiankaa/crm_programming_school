@@ -1,17 +1,32 @@
-import style from './Login.module.css'
+import style from './Login.module.css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { v4 as uuidv4 } from 'uuid'
-import { ILogin } from '../../interfaces'
-import { joiResolver } from '@hookform/resolvers/joi'
-import { loginValidator } from '../../validators'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { v4 as uuidv4 } from 'uuid';
+import { ILogin } from '../../interfaces';
+import { joiResolver } from '@hookform/resolvers/joi';
+import { loginValidator } from '../../validators';
+import { authActions } from '../../redux/slices';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [checkPassword, setCheckPassword] = useState<boolean>(false)
+    const DEVICE_ID = 'deviceId';
 
+    const [checkPassword, setCheckPassword] = useState<boolean>(false);
+
+    const dispatch = useAppDispatch();
+    const { error, isLoading, manager } = useAppSelector((state) => state.auth);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!error && !isLoading && manager) {
+            navigate('/orders');
+        }
+    }, [error, isLoading, manager, navigate]);
     const {
         register,
         handleSubmit,
@@ -19,17 +34,23 @@ const Login = () => {
     } = useForm<ILogin>({
         mode: 'onBlur',
         resolver: joiResolver(loginValidator),
-    })
+    });
 
     const handleLogin: SubmitHandler<ILogin> = async (value) => {
-        console.log(value)
-        let deviceId = localStorage.getItem('deviceId')
+        let deviceId = localStorage.getItem(DEVICE_ID);
         if (!deviceId) {
-            deviceId = uuidv4()
-            localStorage.setItem('deviceId', deviceId)
+            deviceId = uuidv4();
+            localStorage.setItem(DEVICE_ID, deviceId);
         }
-        console.log(deviceId)
-    }
+        dispatch(
+            authActions.login({
+                loginData: {
+                    ...value,
+                    deviceId,
+                },
+            })
+        );
+    };
     return (
         <div
             className={
@@ -76,13 +97,18 @@ const Login = () => {
                             </div>
                         )}
                     </div>
+                    {error && (
+                        <div className="alert alert-warning" role="alert">
+                            {error.message}
+                        </div>
+                    )}
                     <button type="submit" className={`btn ${style.Button}`}>
-                        Submit
+                        {isLoading ? '...' : 'Submit'}
                     </button>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export { Login }
+export { Login };

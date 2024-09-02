@@ -1,6 +1,6 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { MainLayout } from './layouts'
-import { LoginPage, OrdersPage } from './pages'
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { MainLayout } from './layouts';
+import { LoginPage, OrdersPage } from './pages';
 
 const router = createBrowserRouter([
     {
@@ -12,6 +12,6 @@ const router = createBrowserRouter([
             { path: 'orders', element: <OrdersPage /> },
         ],
     },
-])
+]);
 
-export { router }
+export { router };
