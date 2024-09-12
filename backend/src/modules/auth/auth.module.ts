@@ -5,10 +5,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from '../redis/redis.module';
 import { AuthController } from './auth.controller';
 import { JwtAccessGuard } from './guards/jwt-access.guard';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { AuthService } from './services/auth.service';
 import { AuthCacheService } from './services/auth-cache.service';
 import { TokenService } from './services/token.service';
-import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @Module({
   imports: [RedisModule, JwtModule],

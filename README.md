@@ -15,18 +15,27 @@ $ npm install
 
 ```bash
 
+# Follow the steps below to set up and run the backend server:
+
 # start docker
 Ensure Docker Desktop is running on your computer.
+
+# navigate to the backend directory
+cd backend
 
 # run the following command to start the Docker containers:
 $ npm run start:docker:db
 
 # run existing migrations
-npm run migration:run 
+$ npm run migration:run 
 
 # start the Development Server
 $ npm run start:dev
 
+# Once the backend is up and running, navigate to the frontend directory and start the frontend server.
+cd frontend 
+
+$ npm run start
 
 ## API Documentation
 

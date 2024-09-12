@@ -1,9 +1,11 @@
 import { ApiResponse } from '../types';
 import { apiService } from './apiService';
 import { urls } from '../constants';
+import { IOrder, IPaginationRes, IQuery } from '../interfaces';
 
 const orderService = {
-    getAll: (): ApiResponse<any> => apiService.get(urls.orders.base),
+    getAll: (query: IQuery): ApiResponse<IPaginationRes<IOrder>> =>
+        apiService.get(urls.orders.base, { params: query }),
 };
 
 export { orderService };

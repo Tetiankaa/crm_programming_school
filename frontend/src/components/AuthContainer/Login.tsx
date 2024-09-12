@@ -1,16 +1,16 @@
-import style from './Login.module.css';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { joiResolver } from '@hookform/resolvers/joi';
+
+import style from './Login.module.css';
 import { v4 as uuidv4 } from 'uuid';
 import { ILogin } from '../../interfaces';
-import { joiResolver } from '@hookform/resolvers/joi';
 import { loginValidator } from '../../validators';
 import { authActions } from '../../redux/slices';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const DEVICE_ID = 'deviceId';

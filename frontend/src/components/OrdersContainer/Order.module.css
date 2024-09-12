@@ -1,0 +1,20 @@
+.TableHead:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.ListItem {
+    color: #a927ba;
+}
+.ListActive {
+    color: white;
+    background-color: #a927ba;
+}
+.ListItem:hover {
+    background-color: rgba(101, 101, 101, 0.07);
+    color: #a927ba;
+    cursor: pointer;
+}
+.NavLinks {
+    display: flex;
+    justify-content: center;
+}

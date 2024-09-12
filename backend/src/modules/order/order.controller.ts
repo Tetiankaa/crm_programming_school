@@ -12,7 +12,6 @@ import { QueryReqDto } from '../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../pagination/dto/res/pagination.res.dto';
 import { OrderResDto } from './dto/res/order.res.dto';
 import { OrderService } from './services/order.service';
-import { SkipAuth } from '../auth/decorators/skip-auth.decorator';
 
 @Controller('orders')
 @ApiTags('Orders')
@@ -21,7 +20,6 @@ export class OrderController {
 
   @Get()
   @ApiBearerAuth()
-  @SkipAuth()
   @ApiBadRequestResponse({ description: 'Bad Request' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiPaginatedResponse(OrderResDto)

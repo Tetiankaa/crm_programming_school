@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
 const loginValidator = Joi.object({
     email: Joi.string()
@@ -15,6 +15,6 @@ const loginValidator = Joi.object({
         'string.empty': '{#label} should not be empty',
         'string.base': '{#label} should be a type of text',
     }),
-})
+});
 
-export { loginValidator }
+export { loginValidator };

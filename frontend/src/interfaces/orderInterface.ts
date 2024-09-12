@@ -17,5 +17,5 @@ export interface IOrder {
     utm: string;
     msg: string;
     manager_name: string;
-    group_name: string;
+    group: string;
 }

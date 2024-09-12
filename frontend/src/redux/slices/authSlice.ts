@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit';
 import { IError, ILogin, IManager } from '../../interfaces';
 import { authService } from '../../services';
-import axios from 'axios';
+import { handleAsyncThunkError } from '../../utils';
 
 interface IState {
     isLoading: boolean;
@@ -29,17 +29,7 @@ const login = createAsyncThunk<
     try {
         return await authService.login(loginData);
     } catch (err) {
-        let errorMsg = 'An unexpected error occurred';
-        let statusCode = 500;
-
-        if (axios.isAxiosError(err)) {
-            errorMsg = err.response?.data?.messages[0] || errorMsg;
-            statusCode = err.response?.data?.statusCode || 500;
-        } else {
-            const error = err as Error;
-            errorMsg = error.message;
-        }
-        return rejectWithValue({ message: errorMsg, statusCode });
+        return rejectWithValue(handleAsyncThunkError(err));
     }
 });
 const authSlice = createSlice({
