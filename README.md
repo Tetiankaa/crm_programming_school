@@ -4,50 +4,47 @@
 ## Prerequisites
 
 - Node.js and npm installed on your machine.
-
-## Installation
-
-```bash
-$ npm install
-```
+- Docker Desktop is running on your computer
 
 ## Running the app
+### Backend Setup
 
 ```bash
 
-# Follow the steps below to set up and run the backend server:
+# 1. Navigate to the backend directory:
+$ cd backend
 
-# start docker
-Ensure Docker Desktop is running on your computer.
+# 2. Install dependencies:
+$ npm install
 
-# navigate to the backend directory
-cd backend
-
-# run the following command to start the Docker containers:
+# 3. Start Docker containers:
 $ npm run start:docker:db
 
-# run existing migrations
+# 4. Run database migrations:
 $ npm run migration:run 
 
-# start the Development Server
+# 5. Start the development server
 $ npm run start:dev
+```
+### Frontend Setup
 
-# Once the backend is up and running, navigate to the frontend directory and start the frontend server.
-cd frontend 
+```bash
 
+# 1. Navigate to the frontend directory:
+$ cd frontend 
+
+# 2. Install dependencies:
+$ npm install
+
+# 3. Start the frontend server:
 $ npm run start
 
-## API Documentation
-
-This project includes API documentation generated with Swagger. 
-
-Once the application is running, you can access the Swagger documentation in your web browser by navigating to the following URL: http://localhost:4000/api
-
-# Using the Documentation
-
- - Explore Endpoints: Browse all available API endpoints, view request parameters, response schemas, and possible HTTP status codes.
- - Test Endpoints: Use the interactive interface to send requests directly to the API from your browser.
- - Authorization: You can input a JWT token within the Swagger UI to test protected endpoints.
 ```
+### API Documentation
 
+This project includes API documentation generated with Swagger. Once the application is running, you can access the Swagger documentation by navigating to: **http://localhost:4000/api**
 
+## Using the Documentation
+- Explore Endpoints: Browse all available API endpoints, view request parameters, response schemas, and possible HTTP status codes.
+- Test Endpoints: Use the interactive interface to send requests directly to the API from your browser.
+- Authorization: You can input a JWT token within the Swagger UI to test protected endpoints.
