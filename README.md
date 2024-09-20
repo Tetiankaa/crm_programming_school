@@ -41,7 +41,7 @@ $ npm run start
 
 This project includes API documentation generated with Swagger. 
 
-Once the application is running, you can access the Swagger documentation in your web browser by navigating to the following URL: http://localhost:3000/api
+Once the application is running, you can access the Swagger documentation in your web browser by navigating to the following URL: http://localhost:4000/api
 
 # Using the Documentation
 
