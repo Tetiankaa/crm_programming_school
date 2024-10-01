@@ -73,17 +73,9 @@
     "rimraf": "^4.0.0",
     "glob": "^9.0.0",
     "svgo": "^3",
-    "sourcemap-codec": "@jridgewell/sourcemap-codec",
     "domexception": "4.0.0",
     "abab": "2.0.6",
     "workbox-google-analytics": "6.6.0",
-    "workbox-cacheable-response": "6.6.0",
-    "react-scripts": {
-      "workbox-webpack-plugin": {
-        "workbox-build": {
-          "rollup-plugin-terser": "@rollup/plugin-terser"
-        }
-      }
-    }
+    "workbox-cacheable-response": "6.6.0"
   }
 }
