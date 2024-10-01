@@ -11,7 +11,6 @@ import { ApiError } from '../ErrorContainer';
 import { Pagination } from '../PaginationContainer';
 
 const Orders = () => {
-    const { manager } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
     const [searchParams, setSearchParams] = useSearchParams({

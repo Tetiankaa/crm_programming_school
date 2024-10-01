@@ -10,12 +10,10 @@ const Order: FC<IProps> = ({ order }) => {
     const {
         id,
         age,
-        utm,
         sum,
         course,
         course_format,
         course_type,
-        msg,
         email,
         created_at,
         name,
