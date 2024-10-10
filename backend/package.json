@@ -90,5 +90,14 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "rimraf": "^4.0.0",
+    "glob": "^9.0.0",
+    "babel-preset-es2015": "@babel/preset-env",
+    "eslint": {
+      "@humanwhocodes/config-array": "@eslint/config-array",
+      "@humanwhocodes/object-schema": "@eslint/object-schema"
+    }
   }
 }

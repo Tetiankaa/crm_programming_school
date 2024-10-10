@@ -34,7 +34,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky install",
     "lint": "eslint ."
   },
   "eslintConfig": {
@@ -67,8 +66,16 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "globals": "^15.9.0",
-    "husky": "^9.1.5",
     "prettier": "^3.3.3",
     "typescript-eslint": "^8.3.0"
+  },
+  "overrides": {
+    "rimraf": "^4.0.0",
+    "glob": "^9.0.0",
+    "svgo": "^3",
+    "domexception": "4.0.0",
+    "abab": "2.0.6",
+    "workbox-google-analytics": "6.6.0",
+    "workbox-cacheable-response": "6.6.0"
   }
 }
