@@ -1,82 +1,73 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
 import {
-  IsDate,
   IsEnum,
   IsOptional,
   IsString,
+  Length,
+  Matches,
+  Max,
   Min,
-  Validate,
 } from 'class-validator';
 
-import { TransformHelper } from '../../../../common/helpers/transform.helper';
-import { IsValidOrderField } from '../../../../common/validators/is-valid-order-field.validator';
 import { ECourse } from '../../../../database/entities/enums/course.enum';
 import { ECourseFormat } from '../../../../database/entities/enums/course-format.enum';
 import { ECourseType } from '../../../../database/entities/enums/course-type.enum';
 import { EOrderStatus } from '../../../../database/entities/enums/order-status.enum';
-import { ValidatedInteger } from '../../../order/decorators/validated-integer.decorator';
-import { ValidatedTrimmedString } from '../../../order/decorators/validated-trimmed-string.decorator';
-import {
-  EOrderFieldsAsc,
-  EOrderFieldsDesc,
-} from '../../models/enums/order-fields.enum';
-import { BasePaginationReqDto } from './base-pagination.req.dto';
-import { TimeHelper } from '../../../../common/helpers/time.helper';
+import { ValidatedInteger } from '../../decorators/validated-integer.decorator';
+import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-string.decorator';
 
-export class QueryReqDto extends BasePaginationReqDto {
-  @ApiProperty({
-    required: false,
-    default: EOrderFieldsDesc.ID,
-    enum: [
-      ...Object.values(EOrderFieldsAsc),
-      ...Object.values(EOrderFieldsDesc),
-    ],
-    description:
-      'Use a "-" before the field name for descending order (e.g., "-id" for descending order by ID)',
-  })
-  @IsString()
+export class BaseOrderReqDto {
   @IsOptional()
-  @Validate(IsValidOrderField)
-  order?: EOrderFieldsDesc | EOrderFieldsAsc = EOrderFieldsDesc.ID;
+  @ApiProperty({
+    example: '1',
+    required: false,
+  })
+  group_id?: string;
 
   @ValidatedTrimmedString()
   @IsOptional()
-  @Transform(TransformHelper.toLowerCase)
+  @Length(1, 35)
   @ApiProperty({
+    example: 'Oksana',
     required: false,
   })
   name?: string;
 
   @ValidatedTrimmedString()
   @IsOptional()
-  @Transform(TransformHelper.toLowerCase)
+  @Length(1, 35)
   @ApiProperty({
+    example: 'Pavlova',
     required: false,
   })
   surname?: string;
 
   @ValidatedTrimmedString()
   @IsOptional()
-  @Transform(TransformHelper.toLowerCase)
+  @Matches(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, {
+    message:
+      'Email address must be in a valid format (Example: user@example.com)',
+  })
   @ApiProperty({
+    example: 'user@example.com',
     required: false,
   })
   email?: string;
 
   @ValidatedTrimmedString()
   @IsOptional()
-  @ApiProperty({
-    required: false,
+  @Matches(/^\\d{3}\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/, {
+    message: 'Invalid phone number. (Example: 380 12 345 67 89)',
   })
+  @ApiProperty({ example: '380 12 345 67 89', required: false })
   phone?: string;
 
   @ValidatedInteger()
   @IsOptional()
-  @ApiProperty({
-    required: false,
-  })
-  age?: number;
+  @Min(16)
+  @Max(90)
+  @ApiProperty({ example: 24, required: false })
+  age?: number | null;
 
   @IsOptional()
   @IsString()
@@ -112,36 +103,15 @@ export class QueryReqDto extends BasePaginationReqDto {
 
   @ValidatedInteger()
   @IsOptional()
-  @ApiProperty({
-    example: 1,
-    required: false,
-  })
-  group?: number;
+  @Min(1)
+  @Max(2147483647)
+  @ApiProperty({ example: 500, required: false })
+  sum?: number | null;
 
+  @ValidatedInteger()
   @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  @ApiProperty({
-    example: '2022-05-01',
-    required: false,
-  })
-  start_date?: Date;
-
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  @Transform(TimeHelper.setHoursForEndDate)
-  @ApiProperty({
-    example: '2022-05-01',
-    required: false,
-  })
-  end_date?: Date;
-
-  @ValidatedTrimmedString()
-  @IsOptional()
-  @Transform(TransformHelper.toLowerCase)
-  @ApiProperty({
-    required: false,
-  })
-  manager?: string;
+  @Min(1)
+  @Max(2147483647)
+  @ApiProperty({ example: 500, required: false })
+  alreadyPaid?: number | null;
 }

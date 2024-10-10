@@ -1,4 +1,5 @@
 import { OrderEntity } from '../../../database/entities/order.entity';
+import { CommentMapper } from './comment.mapper';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
 import { OrderResDto } from '../dto/res/order.res.dto';
 
@@ -22,6 +23,9 @@ export class OrderMapper {
       utm: entity.utm,
       group_name: entity.group ? entity.group.name : null,
       manager_name: entity.manager ? entity.manager.name : null,
+      comments: entity.comments
+        ? CommentMapper.toListDto(entity.comments)
+        : null,
     };
   }
 

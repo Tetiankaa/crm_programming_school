@@ -5,4 +5,8 @@ export enum ETableName {
   REFRESH_TOKENS = 'refresh_tokens',
   ACTION_TOKENS = 'action_tokens',
   GROUPS = 'groups',
+  ORDER_STATUS = 'order_status',
+  COURSE_TYPES = 'course_types',
+  COURSE_FORMATS = 'course_formats',
+  COURSES = 'courses',
 }

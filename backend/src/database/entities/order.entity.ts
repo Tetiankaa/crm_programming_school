@@ -1,12 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
+import { CommentEntity } from './comment.entity';
 import { ECourse } from './enums/course.enum';
 import { ECourseFormat } from './enums/course-format.enum';
 import { ECourseType } from './enums/course-type.enum';
@@ -70,4 +64,9 @@ export class OrderEntity extends BaseModel {
   @ManyToOne(() => GroupEntity, (entity) => entity.orders)
   @JoinColumn({ name: 'group_id' })
   group?: GroupEntity;
+
+  @OneToMany(() => CommentEntity, (entity) => entity.order, {
+    cascade: true,
+  })
+  comments?: CommentEntity[];
 }

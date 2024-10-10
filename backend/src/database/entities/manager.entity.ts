@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 
 import { ActionTokenEntity } from './action-token.entity';
 import { ETableName } from './enums/table-name.enum';
@@ -6,6 +6,7 @@ import { EUserRole } from './enums/user-role.enum';
 import { BaseModel } from './models/base.model';
 import { OrderEntity } from './order.entity';
 import { RefreshTokenEntity } from './refresh-token.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity({ name: ETableName.MANAGERS })
 export class ManagerEntity extends BaseModel {
@@ -38,4 +39,7 @@ export class ManagerEntity extends BaseModel {
 
   @OneToMany(() => ActionTokenEntity, (entity) => entity.manager)
   actionTokens?: ActionTokenEntity[];
+
+  @OneToMany(() => CommentEntity, (entity) => entity.manager)
+  comments?: CommentEntity[];
 }

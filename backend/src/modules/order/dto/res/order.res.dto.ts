@@ -4,6 +4,7 @@ import { ECourse } from '../../../../database/entities/enums/course.enum';
 import { ECourseFormat } from '../../../../database/entities/enums/course-format.enum';
 import { ECourseType } from '../../../../database/entities/enums/course-type.enum';
 import { EOrderStatus } from '../../../../database/entities/enums/order-status.enum';
+import { CommentResDto } from './comment.res.dto';
 
 export class OrderResDto {
   @ApiProperty({
@@ -111,4 +112,7 @@ export class OrderResDto {
     description: 'The group name the customer belongs to',
   })
   public readonly group_name: string;
+
+  @ApiProperty({ type: [CommentResDto] })
+  public readonly comments: CommentResDto[];
 }

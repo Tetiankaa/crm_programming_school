@@ -1,9 +1,14 @@
 import { Global, Module } from '@nestjs/common';
 
 import { ActionTokenRepository } from './services/action-token.repository';
+import { CommentRepository } from './services/comment.repository';
+import { CourseRepository } from './services/course.repository';
+import { CourseFormatRepository } from './services/course-format.repository';
+import { CourseTypeRepository } from './services/course-type.repository';
 import { GroupRepository } from './services/group.repository';
 import { ManagerRepository } from './services/manager.repository';
 import { OrderRepository } from './services/order.repository';
+import { OrderStatusRepository } from './services/order-status.repository';
 import { RefreshTokenRepository } from './services/refresh-token.repository';
 
 const repositories = [
@@ -12,6 +17,11 @@ const repositories = [
   GroupRepository,
   RefreshTokenRepository,
   ActionTokenRepository,
+  CommentRepository,
+  OrderStatusRepository,
+  CourseTypeRepository,
+  CourseFormatRepository,
+  CourseRepository,
 ];
 @Global()
 @Module({

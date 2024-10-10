@@ -1,1 +1,1 @@
-export type RelationConfig = Record<string, boolean>;
+export type RelationConfig = Record<string, any>;

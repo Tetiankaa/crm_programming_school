@@ -6,7 +6,7 @@ import { OrderEntity } from './order.entity';
 
 @Entity(ETableName.GROUPS)
 export class GroupEntity extends BaseModel {
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 30, unique: true })
   name: string;
 
   @OneToMany(() => OrderEntity, (entity) => entity.group)
