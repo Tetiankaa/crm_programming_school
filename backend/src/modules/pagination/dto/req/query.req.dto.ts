@@ -5,10 +5,10 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  Min,
   Validate,
 } from 'class-validator';
 
+import { TimeHelper } from '../../../../common/helpers/time.helper';
 import { TransformHelper } from '../../../../common/helpers/transform.helper';
 import { IsValidOrderField } from '../../../../common/validators/is-valid-order-field.validator';
 import { ECourse } from '../../../../database/entities/enums/course.enum';
@@ -22,7 +22,6 @@ import {
   EOrderFieldsDesc,
 } from '../../models/enums/order-fields.enum';
 import { BasePaginationReqDto } from './base-pagination.req.dto';
-import { TimeHelper } from '../../../../common/helpers/time.helper';
 
 export class QueryReqDto extends BasePaginationReqDto {
   @ApiProperty({

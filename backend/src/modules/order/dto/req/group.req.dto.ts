@@ -1,6 +1,7 @@
-import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-string.decorator';
-import { IsNotEmpty, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, Length } from 'class-validator';
+
+import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-string.decorator';
 
 export class GroupReqDto {
   @ValidatedTrimmedString()

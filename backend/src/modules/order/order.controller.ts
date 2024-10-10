@@ -26,6 +26,7 @@ import { QueryReqDto } from '../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../pagination/dto/res/pagination.res.dto';
 import { CommentReqDto } from './dto/req/comment.req.dto';
 import { GroupReqDto } from './dto/req/group.req.dto';
+import { UpdateOrderReqDto } from './dto/req/update-order.req.dto';
 import { CourseResDto } from './dto/res/course.res.dto';
 import { CourseFormatResDto } from './dto/res/course-format.res.dto';
 import { CourseTypeResDto } from './dto/res/course-type.res.dto';
@@ -34,7 +35,6 @@ import { OrderResDto } from './dto/res/order.res.dto';
 import { OrderStatusResDto } from './dto/res/order-status.res.dto';
 import { OrderPermissionGuard } from './guards/order-permission.guard';
 import { OrderService } from './services/order.service';
-import { UpdateOrderReqDto } from './dto/req/update-order.req.dto';
 
 @Controller('orders')
 @ApiTags('Orders')

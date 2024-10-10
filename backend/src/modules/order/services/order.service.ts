@@ -53,13 +53,8 @@ export class OrderService {
     const data = await this.paginationService.paginate<OrderEntity>(
       query,
       this.orderRepository,
-      [
-        { comments: { manager: true} },
-        { manager: true },
-        { group: true },
-      ],
+      [{ comments: { manager: true } }, { manager: true }, { group: true }],
     );
-    console.log(data.data[0]);
     return OrderMapper.toOrderListDto(data);
   }
 

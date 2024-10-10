@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ETableName } from './enums/table-name.enum';
+
 import { ECourseType } from './enums/course-type.enum';
+import { ETableName } from './enums/table-name.enum';
 
 @Entity({ name: ETableName.COURSE_TYPES })
 export class CourseTypeEntity {

@@ -1,7 +1,7 @@
 import { OrderEntity } from '../../../database/entities/order.entity';
-import { CommentMapper } from './comment.mapper';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
 import { OrderResDto } from '../dto/res/order.res.dto';
+import { CommentMapper } from './comment.mapper';
 
 export class OrderMapper {
   public static toOrderDto(entity: OrderEntity): OrderResDto {
