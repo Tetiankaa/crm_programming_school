@@ -82,7 +82,7 @@ export class QueryReqDto extends BasePaginationReqDto {
   @IsEnum(EOrderStatus, {
     message: `Entered order status must be one of the following values: ${Object.values(EOrderStatus)}`,
   })
-  @ApiProperty({ example: 'New', required: false })
+  @ApiProperty({ required: false })
   status?: EOrderStatus;
 
   @IsOptional()
@@ -90,7 +90,7 @@ export class QueryReqDto extends BasePaginationReqDto {
   @IsEnum(ECourse, {
     message: `Entered course must be one of the following values: ${Object.values(ECourse)}`,
   })
-  @ApiProperty({ example: 'QACX', required: false })
+  @ApiProperty({ required: false })
   course?: ECourse;
 
   @IsOptional()
@@ -98,7 +98,7 @@ export class QueryReqDto extends BasePaginationReqDto {
   @IsEnum(ECourseFormat, {
     message: `Entered course format must be one of the following values: ${Object.values(ECourseFormat)}`,
   })
-  @ApiProperty({ example: 'online', required: false })
+  @ApiProperty({ required: false })
   course_format?: ECourseFormat;
 
   @IsOptional()
@@ -106,7 +106,7 @@ export class QueryReqDto extends BasePaginationReqDto {
   @IsEnum(ECourseType, {
     message: `Entered course type must be one of the following values: ${Object.values(ECourseType)}`,
   })
-  @ApiProperty({ example: 'premium', required: false })
+  @ApiProperty({ required: false })
   course_type?: ECourseType;
 
   @ValidatedInteger()
@@ -121,7 +121,6 @@ export class QueryReqDto extends BasePaginationReqDto {
   @Type(() => Date)
   @IsDate()
   @ApiProperty({
-    example: '2022-05-01',
     required: false,
   })
   start_date?: Date;
@@ -131,7 +130,6 @@ export class QueryReqDto extends BasePaginationReqDto {
   @IsDate()
   @Transform(TimeHelper.setHoursForEndDate)
   @ApiProperty({
-    example: '2022-05-01',
     required: false,
   })
   end_date?: Date;

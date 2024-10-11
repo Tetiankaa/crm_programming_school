@@ -4,6 +4,7 @@ export type Configs = {
   security: SecurityConfig;
   redis: RedisConfig;
   jwt: JWTConfig;
+  excel: ExcelConfig;
 };
 
 export type AppConfig = {
@@ -34,4 +35,9 @@ export type SecurityConfig = {
   defaultManagerPassword: string;
   admin_email: string;
   admin_password: string;
+};
+
+export type ExcelConfig = {
+  excelMimeType: string;
+  excelWorksheet: string;
 };

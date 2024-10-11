@@ -6,8 +6,10 @@ import {
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -17,9 +19,12 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Response } from 'express';
 
 import { ApiAuth } from '../../common/decorators/api-auth.decorator';
+import { ApiExcelDecorator } from '../../common/decorators/api-excel.decorator';
 import { ApiPaginatedResponse } from '../../common/decorators/api-paginated-res.decorator';
+import { Configs, ExcelConfig } from '../../configs/configs.type';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { IUserData } from '../auth/interfaces/user-data.interface';
 import { QueryReqDto } from '../pagination/dto/req/query.req.dto';
@@ -39,7 +44,13 @@ import { OrderService } from './services/order.service';
 @Controller('orders')
 @ApiTags('Orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  private readonly excelConfig: ExcelConfig;
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly configService: ConfigService<Configs>,
+  ) {
+    this.excelConfig = this.configService.get<ExcelConfig>('excel');
+  }
 
   @Get()
   @ApiAuth()
@@ -171,5 +182,22 @@ export class OrderController {
     @Body() dto: UpdateOrderReqDto,
   ): Promise<OrderResDto> {
     return await this.orderService.updateOrder(userData, id, dto);
+  }
+
+  @Get('download')
+  @ApiAuth()
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiExcelDecorator()
+  public async getExcelFile(
+    @Query() query: QueryReqDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    const workbook = await this.orderService.createWorkbook(query);
+
+    res.setHeader('Content-Type', `${this.excelConfig.excelMimeType}`);
+    res.setHeader('Content-Disposition', 'attachment; filename=report.xlsx');
+
+    await workbook.xlsx.write(res);
+    res.end();
   }
 }

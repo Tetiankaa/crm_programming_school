@@ -37,4 +37,8 @@ export default (): Configs => ({
     access_secret: process.env.JWT_ACCESS_SECRET,
     refresh_secret: process.env.JWT_REFRESH_SECRET,
   },
+  excel: {
+    excelMimeType: process.env.EXCEL_MIME_TYPE,
+    excelWorksheet: process.env.EXCEL_WORKSHEET,
+  },
 });

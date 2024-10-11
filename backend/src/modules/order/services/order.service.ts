@@ -3,10 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { Workbook } from 'exceljs';
 import { EntityManager, Repository } from 'typeorm';
 
 import { errorMessages } from '../../../common/constants/error-messages.constant';
+import { Configs, ExcelConfig } from '../../../configs/configs.type';
 import { CommentEntity } from '../../../database/entities/comment.entity';
 import { CourseEntity } from '../../../database/entities/course.entity';
 import { CourseFormatEntity } from '../../../database/entities/course-format.entity';
@@ -19,7 +22,6 @@ import { OrderStatusEntity } from '../../../database/entities/order-status.entit
 import { IUserData } from '../../auth/interfaces/user-data.interface';
 import { QueryReqDto } from '../../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
-import { RelationConfig } from '../../pagination/models/types/relation-config.type';
 import { PaginationService } from '../../pagination/services/pagination.service';
 import { OrderRepository } from '../../repository/services/order.repository';
 import { CommentReqDto } from '../dto/req/comment.req.dto';
@@ -40,12 +42,16 @@ import { OrderStatusMapper } from '../mappers/order-status.mapper';
 
 @Injectable()
 export class OrderService {
+  private readonly excelConfig: ExcelConfig;
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly paginationService: PaginationService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
-  ) {}
+    private readonly configService: ConfigService<Configs>,
+  ) {
+    this.excelConfig = this.configService.get<ExcelConfig>('excel');
+  }
 
   public async getAll(
     query: QueryReqDto,
@@ -202,6 +208,51 @@ export class OrderService {
     });
   }
 
+  public async createWorkbook(query: QueryReqDto): Promise<Workbook> {
+    const orders = await this.getAll(query);
+
+    return this.createAndFormatWorksheet(orders.data);
+  }
+  private createAndFormatWorksheet(orders: OrderResDto[]): Workbook {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet(this.excelConfig.excelWorksheet);
+
+    worksheet.columns = [
+      { header: 'id', key: 'id', width: 7 },
+      { header: 'name', key: 'name', width: 20 },
+      { header: 'surname', key: 'surname', width: 20 },
+      { header: 'email', key: 'email', width: 30 },
+      { header: 'phone', key: 'phone', width: 15 },
+      { header: 'age', key: 'age', width: 7 },
+      { header: 'course format', key: 'course_format', width: 13 },
+      { header: 'course type', key: 'course_type', width: 12 },
+      { header: 'course', key: 'course', width: 12 },
+      { header: 'status', key: 'status', width: 12 },
+      { header: 'sum', key: 'sum', width: 15 },
+      { header: 'already paid', key: 'alreadyPaid', width: 15 },
+      { header: 'created', key: 'created_at', width: 20 },
+      { header: 'manager', key: 'manager_name', width: 15 },
+      { header: 'group', key: 'group_name', width: 15 },
+    ];
+
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFD966FF' },
+      };
+      cell.font = {
+        bold: true,
+        color: { argb: 'FFFFFFFF' },
+      };
+    });
+    headerRow.commit();
+
+    orders.forEach((order) => worksheet.addRow(order));
+
+    return workbook;
+  }
   private handleNullValues(
     dto: UpdateOrderReqDto,
     entity: OrderEntity,
