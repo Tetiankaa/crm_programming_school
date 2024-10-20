@@ -13,7 +13,7 @@ export class RefreshTokenEntity extends BaseModel {
   deviceId: string;
 
   @Column()
-  manager_id: string;
+  manager_id: number;
 
   @ManyToOne(() => ManagerEntity, (entity) => entity.refreshTokens)
   @JoinColumn({ name: 'manager_id' })

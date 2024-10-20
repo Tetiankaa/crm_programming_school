@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -21,8 +22,9 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 
+import { errorMessages } from '../../common/constants/error-messages.constant';
 import { ApiAuth } from '../../common/decorators/api-auth.decorator';
-import { ApiExcelDecorator } from '../../common/decorators/api-excel.decorator';
+import { ApiOkExcelFile } from '../../common/decorators/api-ok-excel-file.decorator';
 import { ApiPaginatedResponse } from '../../common/decorators/api-paginated-res.decorator';
 import { Configs, ExcelConfig } from '../../configs/configs.type';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -54,7 +56,7 @@ export class OrderController {
 
   @Get()
   @ApiAuth()
-  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
   @ApiPaginatedResponse(OrderResDto)
   @ApiOperation({
     description:
@@ -69,18 +71,18 @@ export class OrderController {
   @Post(':id/addComment')
   @UseGuards(OrderPermissionGuard)
   @ApiAuth()
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiNotFoundResponse({ description: 'Not Found' })
-  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
+  @ApiNotFoundResponse({ description: errorMessages.NOT_FOUND })
+  @ApiForbiddenResponse({ description: errorMessages.FORBIDDEN })
   @ApiCreatedResponse({
     description: 'Comment created successfully',
     type: OrderResDto,
   })
-  @ApiOperation({ description: 'Adds comments to specific orders.' })
+  @ApiOperation({ description: 'Adds comments to specific order.' })
   public async saveComment(
     @CurrentUser() userData: IUserData,
     @Body() comment: CommentReqDto,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<OrderResDto> {
     return await this.orderService.saveComment(userData, comment, id);
   }
@@ -100,8 +102,8 @@ export class OrderController {
 
   @Post('groups')
   @ApiAuth()
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
+  @ApiForbiddenResponse({ description: errorMessages.FORBIDDEN })
   @ApiCreatedResponse({
     description: 'Group created successfully',
     type: GroupResDto,
@@ -168,9 +170,9 @@ export class OrderController {
   @Patch(':id')
   @UseGuards(OrderPermissionGuard)
   @ApiAuth()
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiNotFoundResponse({ description: 'Not Found' })
-  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
+  @ApiNotFoundResponse({ description: errorMessages.NOT_FOUND })
+  @ApiForbiddenResponse({ description: errorMessages.FORBIDDEN })
   @ApiOkResponse({
     description: 'Order updated successfully',
     type: OrderResDto,
@@ -178,7 +180,7 @@ export class OrderController {
   @ApiOperation({ description: 'Updates order based on ID parameter.' })
   public async updateOrder(
     @CurrentUser() userData: IUserData,
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateOrderReqDto,
   ): Promise<OrderResDto> {
     return await this.orderService.updateOrder(userData, id, dto);
@@ -186,8 +188,11 @@ export class OrderController {
 
   @Get('download')
   @ApiAuth()
-  @ApiBadRequestResponse({ description: 'Bad Request' })
-  @ApiExcelDecorator()
+  @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
+  @ApiOkExcelFile()
+  @ApiOperation({
+    description: 'Fetches excel file with orders',
+  })
   public async getExcelFile(
     @Query() query: QueryReqDto,
     @Res() res: Response,
@@ -195,7 +200,7 @@ export class OrderController {
     const workbook = await this.orderService.createWorkbook(query);
 
     res.setHeader('Content-Type', `${this.excelConfig.excelMimeType}`);
-    res.setHeader('Content-Disposition', 'attachment; filename=report.xlsx');
+    res.setHeader('Content-Disposition', `${this.excelConfig.excelAttachment}`);
 
     await workbook.xlsx.write(res);
     res.end();

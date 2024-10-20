@@ -1,6 +1,5 @@
 import { Global, Module } from '@nestjs/common';
 
-import { ActionTokenRepository } from './services/action-token.repository';
 import { CommentRepository } from './services/comment.repository';
 import { CourseRepository } from './services/course.repository';
 import { CourseFormatRepository } from './services/course-format.repository';
@@ -16,7 +15,6 @@ const repositories = [
   OrderRepository,
   GroupRepository,
   RefreshTokenRepository,
-  ActionTokenRepository,
   CommentRepository,
   OrderStatusRepository,
   CourseTypeRepository,

@@ -32,13 +32,22 @@ export default (): Configs => ({
     password: process.env.REDIS_PASSWORD,
   },
   jwt: {
-    refresh_expires_in: parseInt(process.env.JWT_REFRESH_EXPIRES_IN),
-    access_expires_in: parseInt(process.env.JWT_ACCESS_EXPIRES_IN),
+    refresh_expires_in: Number(process.env.JWT_REFRESH_EXPIRES_IN),
+    access_expires_in: Number(process.env.JWT_ACCESS_EXPIRES_IN),
+    action_expires_in: Number(process.env.JWT_ACTION_EXPIRES_IN),
     access_secret: process.env.JWT_ACCESS_SECRET,
     refresh_secret: process.env.JWT_REFRESH_SECRET,
+    action_recovery_password_secret:
+      process.env.JWT_ACTION_RECOVERY_PASSWORD_SECRET,
+    action_activate_manager_secret:
+      process.env.JWT_ACTION_ACTIVATE_MANAGER_SECRET,
   },
   excel: {
     excelMimeType: process.env.EXCEL_MIME_TYPE,
     excelWorksheet: process.env.EXCEL_WORKSHEET,
+    excelAttachment: process.env.EXCEL_ATTACHMENT,
+  },
+  auth: {
+    managerDefaultPassword: process.env.MANAGER_DEFAULT_PASSWORD,
   },
 });

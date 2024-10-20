@@ -19,16 +19,16 @@ import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-strin
 export class BaseOrderReqDto {
   @IsOptional()
   @ApiProperty({
-    example: '1',
+    example: 1,
     required: false,
   })
-  group_id?: string;
+  group_id?: number;
 
   @ValidatedTrimmedString()
   @IsOptional()
   @Length(1, 35)
   @ApiProperty({
-    example: 'Oksana',
+    example: 'Olena',
     required: false,
   })
   name?: string;

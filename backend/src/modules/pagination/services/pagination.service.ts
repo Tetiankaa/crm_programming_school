@@ -14,6 +14,7 @@ export class PaginationService {
     query: QueryReqDto,
     repository: Repository<T>,
     relations: RelationConfig[],
+    excludeUserId?: number,
   ): Promise<PaginationResDto<T>> {
     const {
       page,
@@ -64,6 +65,11 @@ export class PaginationService {
     if (group) this.setFilter(qb, 'group', group);
     if (start_date || end_date) this.setFilterByDate(qb, start_date, end_date);
     if (manager) this.setFilter(qb, 'manager', manager);
+    if (excludeUserId) {
+      qb.andWhere(`${this.ENTITY_ALIAS}.id != :excludeUserId`, {
+        excludeUserId,
+      });
+    }
 
     const [data, totalCount] = await qb
       .skip(skip)

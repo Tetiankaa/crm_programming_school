@@ -5,6 +5,7 @@ export type Configs = {
   redis: RedisConfig;
   jwt: JWTConfig;
   excel: ExcelConfig;
+  auth: AuthConfig;
 };
 
 export type AppConfig = {
@@ -27,8 +28,11 @@ export type RedisConfig = {
 export type JWTConfig = {
   access_secret: string;
   refresh_secret: string;
+  action_recovery_password_secret: string;
+  action_activate_manager_secret: string;
   access_expires_in: number;
   refresh_expires_in: number;
+  action_expires_in: number;
 };
 export type SecurityConfig = {
   hashPasswordRounds: number;
@@ -40,4 +44,8 @@ export type SecurityConfig = {
 export type ExcelConfig = {
   excelMimeType: string;
   excelWorksheet: string;
+  excelAttachment: string;
+};
+export type AuthConfig = {
+  managerDefaultPassword: string;
 };

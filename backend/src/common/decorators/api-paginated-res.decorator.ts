@@ -10,7 +10,7 @@ export const ApiPaginatedResponse = <T extends Type<unknown>>(
     ApiExtraModels(PaginationResDto),
     ApiExtraModels(responseType),
     ApiOkResponse({
-      description: 'Paginated list of order records',
+      description: 'Paginated list of records',
       schema: {
         allOf: [
           { $ref: getSchemaPath(PaginationResDto) },

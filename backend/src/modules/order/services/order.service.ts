@@ -23,6 +23,7 @@ import { IUserData } from '../../auth/interfaces/user-data.interface';
 import { QueryReqDto } from '../../pagination/dto/req/query.req.dto';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
 import { PaginationService } from '../../pagination/services/pagination.service';
+import { CommentRepository } from '../../repository/services/comment.repository';
 import { OrderRepository } from '../../repository/services/order.repository';
 import { CommentReqDto } from '../dto/req/comment.req.dto';
 import { GroupReqDto } from '../dto/req/group.req.dto';
@@ -33,6 +34,7 @@ import { CourseTypeResDto } from '../dto/res/course-type.res.dto';
 import { GroupResDto } from '../dto/res/group.res.dto';
 import { OrderResDto } from '../dto/res/order.res.dto';
 import { OrderStatusResDto } from '../dto/res/order-status.res.dto';
+import { OrderStatistics } from '../interfaces/order-statistics.interface';
 import { CourseMapper } from '../mappers/course.mapper';
 import { CourseFormatMapper } from '../mappers/course-format.mapper';
 import { CourseTypeMapper } from '../mappers/course-type.mapper';
@@ -45,6 +47,7 @@ export class OrderService {
   private readonly excelConfig: ExcelConfig;
   constructor(
     private readonly orderRepository: OrderRepository,
+    private readonly commentRepository: CommentRepository,
     private readonly paginationService: PaginationService,
     @InjectEntityManager()
     private readonly entityManager: EntityManager,
@@ -59,7 +62,7 @@ export class OrderService {
     const data = await this.paginationService.paginate<OrderEntity>(
       query,
       this.orderRepository,
-      [{ comments: { manager: true } }, { manager: true }, { group: true }],
+      [{ manager: true }, { group: true }],
     );
     return OrderMapper.toOrderListDto(data);
   }
@@ -67,7 +70,7 @@ export class OrderService {
   public async saveComment(
     userData: IUserData,
     comment: CommentReqDto,
-    orderId: string,
+    orderId: number,
   ): Promise<OrderResDto> {
     return await this.entityManager.transaction(async (entityManager) => {
       const orderRepository = entityManager.getRepository(OrderEntity);
@@ -115,61 +118,38 @@ export class OrderService {
   }
 
   public async getAllGroups(): Promise<GroupResDto[]> {
-    return await this.entityManager.transaction(async (entityManager) => {
-      const groupRepository = entityManager.getRepository(GroupEntity);
+    const allGroups = await this.getAllRecords(GroupEntity);
 
-      const allGroups = await groupRepository.find();
-
-      return GroupMapper.toListDto(allGroups);
-    });
+    return GroupMapper.toListDto(allGroups);
   }
 
   public async getAllStatuses(): Promise<OrderStatusResDto[]> {
-    return await this.entityManager.transaction(async (entityManager) => {
-      const orderStatusRepository =
-        entityManager.getRepository(OrderStatusEntity);
+    const allStatuses = await this.getAllRecords(OrderStatusEntity);
 
-      const allStatuses = await orderStatusRepository.find();
-
-      return OrderStatusMapper.toListDto(allStatuses);
-    });
+    return OrderStatusMapper.toListDto(allStatuses);
   }
 
   public async getAllCourses(): Promise<CourseResDto[]> {
-    return await this.entityManager.transaction(async (entityManager) => {
-      const courseRepository = entityManager.getRepository(CourseEntity);
+    const allCourses = await this.getAllRecords(CourseEntity);
 
-      const allCourses = await courseRepository.find();
-
-      return CourseMapper.toListDto(allCourses);
-    });
+    return CourseMapper.toListDto(allCourses);
   }
 
   public async getAllCourseFormats(): Promise<CourseFormatResDto[]> {
-    return await this.entityManager.transaction(async (entityManager) => {
-      const courseFormatsRepository =
-        entityManager.getRepository(CourseFormatEntity);
+    const allCourseFormats = await this.getAllRecords(CourseFormatEntity);
 
-      const allCourseFormats = await courseFormatsRepository.find();
-
-      return CourseFormatMapper.toListDto(allCourseFormats);
-    });
+    return CourseFormatMapper.toListDto(allCourseFormats);
   }
 
   public async getAllCourseTypes(): Promise<CourseTypeResDto[]> {
-    return await this.entityManager.transaction(async (entityManager) => {
-      const courseTypesRepository =
-        entityManager.getRepository(CourseTypeEntity);
+    const allCourseTypes = await this.getAllRecords(CourseTypeEntity);
 
-      const allCourseTypes = await courseTypesRepository.find();
-
-      return CourseTypeMapper.toListDto(allCourseTypes);
-    });
+    return CourseTypeMapper.toListDto(allCourseTypes);
   }
 
   public async updateOrder(
     userData: IUserData,
-    orderId: string,
+    orderId: number,
     dto: UpdateOrderReqDto,
   ): Promise<OrderResDto> {
     return await this.entityManager.transaction(async (entityManager) => {
@@ -212,6 +192,15 @@ export class OrderService {
     const orders = await this.getAll(query);
 
     return this.createAndFormatWorksheet(orders.data);
+  }
+
+  public async getOrdersStatistics(): Promise<OrderStatistics> {
+    return await this.orderRepository.getStatistics();
+  }
+  public async getOrdersStatisticsByManagerId(
+    id: number,
+  ): Promise<OrderStatistics> {
+    return await this.orderRepository.getStatistics(id);
   }
   private createAndFormatWorksheet(orders: OrderResDto[]): Workbook {
     const workbook = new Workbook();
@@ -268,30 +257,38 @@ export class OrderService {
     );
   }
   private async saveManagerIfNotExistsAndUpdateStatus(
-    orderId: string,
+    orderId: number,
     manager: ManagerEntity,
     orderRepository: Repository<OrderEntity>,
     relations: string[],
   ): Promise<OrderEntity> {
-    let order = await orderRepository.findOne({
+    let isUpdated = false;
+
+    const order = await orderRepository.findOne({
       where: { id: orderId },
       relations,
     });
 
     if (!order.manager) {
-      order = await orderRepository.save({
-        ...order,
-        manager,
-      });
+      order.manager = manager;
+      isUpdated = true;
     }
 
     if (!order.status || order.status === EOrderStatus.NEW) {
-      order = await orderRepository.save({
-        ...order,
-        status: EOrderStatus.IN_WORK,
-      });
+      order.status = EOrderStatus.IN_WORK;
+      isUpdated = true;
+    }
+
+    if (isUpdated) {
+      await orderRepository.save(order);
     }
 
     return order;
+  }
+
+  private async getAllRecords<T>(entity: { new (): T }): Promise<T[]> {
+    const repository = this.entityManager.getRepository(entity);
+
+    return await repository.find();
   }
 }

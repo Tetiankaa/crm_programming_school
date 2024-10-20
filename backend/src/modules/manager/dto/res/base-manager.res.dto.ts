@@ -4,10 +4,10 @@ import { EUserRole } from '../../../../database/entities/enums/user-role.enum';
 
 export class BaseManagerResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The id of the manager',
   })
-  id: string;
+  id: number;
 
   @ApiProperty({
     example: 'Ivan',
@@ -25,7 +25,7 @@ export class BaseManagerResDto {
     example: 'user@gmail.com',
     description: 'The email of the manager',
   })
-    email: string;
+  email: string;
 
   @ApiProperty({
     example: false,
@@ -34,10 +34,10 @@ export class BaseManagerResDto {
   is_active: boolean;
 
   @ApiProperty({
-    example: '2024-08-12',
+    example: '2024-08-12T15:29:59.200Z',
     description: 'The date when the manager last logged into the system.',
   })
-  last_login: string;
+  last_login: Date;
 
   @ApiProperty({
     example: 'admin',

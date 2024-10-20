@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CommentResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The unique identifier of the comment',
   })
-  public readonly id: string;
+  public readonly id: number;
 
   @ApiProperty({
     example: '2024-08-12T15:29:59.200Z',

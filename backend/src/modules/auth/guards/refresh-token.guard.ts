@@ -50,7 +50,7 @@ export class RefreshTokenGuard implements CanActivate {
       id: payload.manager_id,
     });
 
-    if (!manager) {
+    if (!manager || !manager.is_active) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
 

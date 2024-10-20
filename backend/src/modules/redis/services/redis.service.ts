@@ -29,4 +29,12 @@ export class RedisService {
       this.loggerService.error(error);
     }
   }
+
+  public async keys(pattern: string): Promise<string[]> {
+    try {
+      return await this.redisClient.keys(pattern);
+    } catch (error) {
+      this.loggerService.error(error);
+    }
+  }
 }

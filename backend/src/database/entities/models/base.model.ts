@@ -2,7 +2,7 @@ import { CreateDateColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 export class BaseModel {
   @PrimaryGeneratedColumn('increment')
-  id: string;
+  id: number;
 
   @CreateDateColumn({ default: null })
   created_at: Date;

@@ -4,10 +4,10 @@ import { EOrderStatus } from '../../../../database/entities/enums/order-status.e
 
 export class OrderStatusResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The unique identifier of the status',
   })
-  public readonly id: string;
+  public readonly id: number;
 
   @ApiProperty({
     example: 'In work',

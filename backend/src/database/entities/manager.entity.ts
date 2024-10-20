@@ -1,6 +1,5 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 
-import { ActionTokenEntity } from './action-token.entity';
 import { CommentEntity } from './comment.entity';
 import { ETableName } from './enums/table-name.enum';
 import { EUserRole } from './enums/user-role.enum';
@@ -25,7 +24,11 @@ export class ManagerEntity extends BaseModel {
   @Column({ type: 'boolean', default: false })
   is_active: boolean;
 
-  @Column({ type: 'date' })
+  @Column({
+    type: 'datetime',
+    precision: 6,
+    nullable: true,
+  })
   last_login: Date;
 
   @Column({ type: 'enum', enum: EUserRole })
@@ -36,9 +39,6 @@ export class ManagerEntity extends BaseModel {
 
   @OneToMany(() => RefreshTokenEntity, (entity) => entity.manager)
   refreshTokens?: RefreshTokenEntity[];
-
-  @OneToMany(() => ActionTokenEntity, (entity) => entity.manager)
-  actionTokens?: ActionTokenEntity[];
 
   @OneToMany(() => CommentEntity, (entity) => entity.manager)
   comments?: CommentEntity[];

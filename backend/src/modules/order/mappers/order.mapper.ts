@@ -1,6 +1,9 @@
+import { EOrderStatus } from '../../../database/entities/enums/order-status.enum';
 import { OrderEntity } from '../../../database/entities/order.entity';
 import { PaginationResDto } from '../../pagination/dto/res/pagination.res.dto';
 import { OrderResDto } from '../dto/res/order.res.dto';
+import { OrderStatisticsResDto } from '../dto/res/order-statistics.res.dto';
+import { OrderStatistics } from '../interfaces/order-statistics.interface';
 import { CommentMapper } from './comment.mapper';
 
 export class OrderMapper {
@@ -37,6 +40,19 @@ export class OrderMapper {
       limit: paginationData.limit,
       page: paginationData.page,
       totalCount: paginationData.totalCount,
+    };
+  }
+
+  public static toOrderStatisticsDto(
+    statistic: OrderStatistics,
+  ): OrderStatisticsResDto {
+    return {
+      total: statistic?.total || 0,
+      new: statistic?.statuses[EOrderStatus.NEW] || 0,
+      inWork: statistic?.statuses[EOrderStatus.IN_WORK] || 0,
+      agree: statistic?.statuses[EOrderStatus.AGREE] || 0,
+      disagree: statistic?.statuses[EOrderStatus.DISAGREE] || 0,
+      dubbing: statistic?.statuses[EOrderStatus.DUBBING] || 0,
     };
   }
 }

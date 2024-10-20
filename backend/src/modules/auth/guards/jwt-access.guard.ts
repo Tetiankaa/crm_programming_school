@@ -51,7 +51,7 @@ export class JwtAccessGuard implements CanActivate {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
 
-    const isAccessTokenExists = this.authCacheService.isTokenExists(
+    const isAccessTokenExists = await this.authCacheService.isAccessTokenExists(
       accessToken,
       payload.deviceId,
       payload.manager_id,
@@ -65,9 +65,10 @@ export class JwtAccessGuard implements CanActivate {
       id: payload.manager_id,
     });
 
-    if (!manager) {
+    if (!manager || !manager.is_active) {
       throw new UnauthorizedException(errorMessages.INVALID_TOKEN);
     }
+
     request.user = AuthMapper.toUserDataDto(manager, payload.deviceId);
 
     return true;

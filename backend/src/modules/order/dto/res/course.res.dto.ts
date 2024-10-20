@@ -4,10 +4,10 @@ import { ECourse } from '../../../../database/entities/enums/course.enum';
 
 export class CourseResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The unique identifier of the course',
   })
-  public readonly id: string;
+  public readonly id: number;
 
   @ApiProperty({
     example: 'QACX',

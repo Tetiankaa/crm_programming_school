@@ -52,10 +52,10 @@ export class OrderEntity extends BaseModel {
   msg: string;
 
   @Column({ nullable: true })
-  manager_id: string;
+  manager_id: number;
 
   @Column({ nullable: true })
-  group_id: string;
+  group_id: number;
 
   @ManyToOne(() => ManagerEntity, (entity) => entity.orders)
   @JoinColumn({ name: 'manager_id' })

@@ -4,10 +4,10 @@ import { ECourseType } from '../../../../database/entities/enums/course-type.enu
 
 export class CourseTypeResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The unique identifier of the course type',
   })
-  public readonly id: string;
+  public readonly id: number;
 
   @ApiProperty({
     example: 'minimal',

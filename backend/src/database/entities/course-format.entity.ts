@@ -6,7 +6,7 @@ import { ETableName } from './enums/table-name.enum';
 @Entity({ name: ETableName.COURSE_FORMATS })
 export class CourseFormatEntity {
   @PrimaryGeneratedColumn('increment')
-  id: string;
+  id: number;
 
   @Column({ type: 'enum', enum: ECourseFormat })
   course_format: ECourseFormat;

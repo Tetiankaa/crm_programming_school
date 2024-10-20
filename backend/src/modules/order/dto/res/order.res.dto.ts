@@ -8,10 +8,10 @@ import { CommentResDto } from './comment.res.dto';
 
 export class OrderResDto {
   @ApiProperty({
-    example: '1',
+    example: 1,
     description: 'The unique identifier of the Order',
   })
-  public readonly id: string;
+  public readonly id: number;
 
   @ApiProperty({
     example: 'Ivan',

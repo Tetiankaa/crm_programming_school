@@ -6,8 +6,12 @@ import { errorMessages } from '../../../common/constants/error-messages.constant
 import { Configs, JWTConfig } from '../../../configs/configs.type';
 import { LoggerService } from '../../logger/services/logger.service';
 import { TokenPairResDto } from '../dto/res/token-pair.res.dto';
+import { EActionTokenType } from '../enum/action-token-type.enum';
 import { ETokenType } from '../enum/token-type.enum';
-import { IJwtPayload } from '../interfaces/jwt-payload.interface';
+import {
+  IActionJwtPayload,
+  IJwtPayload,
+} from '../interfaces/jwt-payload.interface';
 
 @Injectable()
 export class TokenService {
@@ -38,6 +42,29 @@ export class TokenService {
     };
   }
 
+  public async generateActionToken(
+    payload: IActionJwtPayload,
+    tokenType: EActionTokenType,
+  ): Promise<string> {
+    try {
+      const expiresIn = this.jwtConfig.action_expires_in;
+      let secret: string;
+
+      switch (tokenType) {
+        case EActionTokenType.ACTIVATE_MANAGER:
+          secret = this.jwtConfig.action_activate_manager_secret;
+          break;
+        case EActionTokenType.RECOVERY_PASSWORD:
+          secret = this.jwtConfig.action_recovery_password_secret;
+          break;
+        default:
+          throw new UnauthorizedException(errorMessages.INVALID_TOKEN_TYPE);
+      }
+      return await this.jwtService.signAsync(payload, { secret, expiresIn });
+    } catch (err) {
+      this.loggerService.error(err);
+    }
+  }
   public async verifyToken(
     token: string,
     tokenType: ETokenType,
@@ -51,7 +78,19 @@ export class TokenService {
       this.loggerService.error(error);
     }
   }
-
+  public async verifyActionToken(
+    token: string,
+    actionTokenType: EActionTokenType,
+  ): Promise<IActionJwtPayload> {
+    try {
+      const secret = this.getActionSecret(actionTokenType);
+      return (await this.jwtService.verifyAsync(token, {
+        secret,
+      })) as IActionJwtPayload;
+    } catch (error) {
+      this.loggerService.error(error);
+    }
+  }
   private getSecret(tokenType: ETokenType): string {
     let secret: string;
 
@@ -61,6 +100,21 @@ export class TokenService {
         break;
       case ETokenType.REFRESH:
         secret = this.jwtConfig.refresh_secret;
+        break;
+      default:
+        throw new UnauthorizedException(errorMessages.INVALID_TOKEN_TYPE);
+    }
+    return secret;
+  }
+  private getActionSecret(tokenType: EActionTokenType): string {
+    let secret: string;
+
+    switch (tokenType) {
+      case EActionTokenType.ACTIVATE_MANAGER:
+        secret = this.jwtConfig.action_activate_manager_secret;
+        break;
+      case EActionTokenType.RECOVERY_PASSWORD:
+        secret = this.jwtConfig.action_recovery_password_secret;
         break;
       default:
         throw new UnauthorizedException(errorMessages.INVALID_TOKEN_TYPE);

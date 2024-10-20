@@ -3,7 +3,7 @@ import { ApiResponse } from '@nestjs/swagger';
 
 import { ConfigStaticService } from '../../configs/config.static';
 
-export const ApiExcelDecorator = (): MethodDecorator => {
+export const ApiOkExcelFile = (): MethodDecorator => {
   return applyDecorators(
     ApiResponse({
       status: 200,
