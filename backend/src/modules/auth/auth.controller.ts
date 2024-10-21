@@ -173,8 +173,7 @@ export class AuthController {
     type: ActionTokenResDto,
   })
   @ApiOperation({
-    description: `
-    Generates token for recovering the manager's password.
+    description: `Generates token for recovering the manager's password.
     This token is sent to the frontend, and it's the frontend's responsibility to construct a URL. Example: http://yourdomain:port/recovery-password/{token}.
     When a manager clicks on this link, they will be redirected to a page where they can set a new password and complete the password recovery process.
   `,
@@ -213,11 +212,12 @@ export class AuthController {
   }
 
   @Patch('ban/:managerId')
+  @HttpCode(statusCodes.NO_CONTENT)
   @Roles(EUserRole.ADMIN)
   @UseGuards(RolesGuard)
   @ApiAuth()
   @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
-  @ApiCreatedResponse({
+  @ApiNoContentResponse({
     description: 'Manager was successfully banned',
   })
   @ApiOperation({
@@ -232,10 +232,11 @@ export class AuthController {
   }
 
   @Patch('unban/:managerId')
+  @HttpCode(statusCodes.NO_CONTENT)
   @Roles(EUserRole.ADMIN)
   @UseGuards(RolesGuard)
   @ApiAuth()
-  @ApiCreatedResponse({
+  @ApiNoContentResponse({
     description: 'Manager successfully was unbanned',
   })
   @ApiOperation({

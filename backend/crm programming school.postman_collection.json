@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\":\"olha@gmail.com\",\r\n    \"password\":\"P@ssword11\",\r\n    \"deviceId\":\"DELL\"\r\n}",
+					"raw": "{\r\n    \"email\":\"admin@gmail.com\",\r\n    \"password\":\"admin\",\r\n    \"deviceId\":\"3223-3453-4vb5-v34v\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
