@@ -200,7 +200,6 @@ export class OrderController {
     const workbook = await this.orderService.createWorkbook(query);
 
     res.setHeader('Content-Type', `${this.excelConfig.excelMimeType}`);
-    res.setHeader('Content-Disposition', `${this.excelConfig.excelAttachment}`);
 
     await workbook.xlsx.write(res);
     res.end();

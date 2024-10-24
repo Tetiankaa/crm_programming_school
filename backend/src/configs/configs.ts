@@ -45,7 +45,6 @@ export default (): Configs => ({
   excel: {
     excelMimeType: process.env.EXCEL_MIME_TYPE,
     excelWorksheet: process.env.EXCEL_WORKSHEET,
-    excelAttachment: process.env.EXCEL_ATTACHMENT,
   },
   auth: {
     managerDefaultPassword: process.env.MANAGER_DEFAULT_PASSWORD,

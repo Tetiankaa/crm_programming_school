@@ -64,6 +64,7 @@ export class OrderService {
       this.orderRepository,
       [{ manager: true }, { group: true }],
     );
+
     return OrderMapper.toOrderListDto(data);
   }
 

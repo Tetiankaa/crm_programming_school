@@ -58,10 +58,10 @@ export class PaginationService {
     if (email) this.setFilter(qb, 'email', email);
     if (phone) this.setFilter(qb, 'phone', phone);
     if (age) this.setFilter(qb, 'age', age);
-    if (course) this.setFilter(qb, 'course', course);
-    if (course_format) this.setFilter(qb, 'course_format', course_format);
-    if (course_type) this.setFilter(qb, 'course_type', course_type);
-    if (status) this.setFilter(qb, 'status', status);
+    if (course) this.setFilter(qb, 'course', course, true);
+    if (course_format) this.setFilter(qb, 'course_format', course_format, true);
+    if (course_type) this.setFilter(qb, 'course_type', course_type, true);
+    if (status) this.setFilter(qb, 'status', status, true);
     if (group) this.setFilter(qb, 'group', group);
     if (start_date || end_date) this.setFilterByDate(qb, start_date, end_date);
     if (manager) this.setFilter(qb, 'manager', manager);
@@ -108,8 +108,9 @@ export class PaginationService {
     qb: SelectQueryBuilder<T>,
     searchField: K,
     searchValue: string | number | Date,
+    isEnum: boolean = false,
   ): SelectQueryBuilder<T> {
-    if (typeof searchValue === 'number') {
+    if (typeof searchValue === 'number' || isEnum) {
       return qb.andWhere(
         `${this.ENTITY_ALIAS}.${searchField} = :${searchField}`,
         {

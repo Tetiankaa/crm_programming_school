@@ -44,7 +44,6 @@ export type SecurityConfig = {
 export type ExcelConfig = {
   excelMimeType: string;
   excelWorksheet: string;
-  excelAttachment: string;
 };
 export type AuthConfig = {
   managerDefaultPassword: string;
