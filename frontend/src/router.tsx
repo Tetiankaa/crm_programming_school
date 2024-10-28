@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { MainLayout } from './layouts';
 import { LoginPage, OrdersPage } from './pages';
-import { RouteError } from './components/ErrorContainer';
+import { RouteError } from './components';
 
 const router = createBrowserRouter([
     {

@@ -1,7 +1,8 @@
 import { ECourse, ECourseFormat, ECourseType, EOrderStatus } from '../enums';
+import { IComment } from './commentInterface';
 
 export interface IOrder {
-    id: string;
+    id: number;
     name: string;
     surname: string;
     email: string;
@@ -17,5 +18,6 @@ export interface IOrder {
     utm: string;
     msg: string;
     manager_name: string;
-    group: string;
+    group_name: string;
+    comments: IComment[];
 }

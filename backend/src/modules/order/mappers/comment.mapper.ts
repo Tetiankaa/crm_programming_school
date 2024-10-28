@@ -11,7 +11,7 @@ export class CommentMapper {
       id: comment.id,
       text: comment.text,
       created_at: comment.created_at,
-      manager_name: comment.manager.name,
+      manager_name: comment.manager.name || 'No_name',
     };
   }
 }

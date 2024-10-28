@@ -5,8 +5,9 @@ body {
   margin: 0;
   font-family: 'Nunito', sans-serif;
 }
-.table-hover tbody tr:hover td {
-  background-color: rgba(169, 39, 186, 0.72);
-  color: white;
-  cursor: pointer;
+.form-control, .form-select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }

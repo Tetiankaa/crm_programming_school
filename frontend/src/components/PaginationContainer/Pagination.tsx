@@ -1,24 +1,22 @@
 import { FC, useEffect, useState } from 'react';
-import { SetURLSearchParams } from 'react-router-dom';
 
 import style from '../OrdersContainer/Order.module.css';
 
 interface IProps {
     page: number;
-    limit: number;
     totalPages: number;
-    setSearchParams: SetURLSearchParams;
+    selectPage: (page: number) => void;
+    maxCenterPages: number;
+    maxEdgePages: number;
 }
 
 const Pagination: FC<IProps> = ({
     totalPages,
     page,
-    limit,
-    setSearchParams,
+    selectPage,
+    maxCenterPages,
+    maxEdgePages,
 }) => {
-    const EDGE_PAGE_DISPLAY_LIMIT = 7;
-    const CENTER_VISIBLE_PAGES = 5;
-
     const [allPages, setAllPages] = useState<number[]>([]);
 
     useEffect(() => {
@@ -26,23 +24,20 @@ const Pagination: FC<IProps> = ({
         let start: number;
         let end: number;
 
-        if (totalPages <= CENTER_VISIBLE_PAGES) {
+        if (totalPages <= maxCenterPages) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            if (page <= Math.floor(EDGE_PAGE_DISPLAY_LIMIT / 2)) {
+            if (page <= Math.floor(maxEdgePages / 2)) {
                 start = 1;
-                end = EDGE_PAGE_DISPLAY_LIMIT;
-            } else if (
-                page >=
-                totalPages - Math.floor(EDGE_PAGE_DISPLAY_LIMIT / 2)
-            ) {
-                start = totalPages - EDGE_PAGE_DISPLAY_LIMIT + 1;
+                end = maxEdgePages;
+            } else if (page >= totalPages - Math.floor(maxEdgePages / 2)) {
+                start = totalPages - maxEdgePages + 1;
                 end = totalPages;
             } else {
-                start = page - Math.floor(CENTER_VISIBLE_PAGES / 2);
-                end = page + Math.floor(CENTER_VISIBLE_PAGES / 2);
+                start = page - Math.floor(maxCenterPages / 2);
+                end = page + Math.floor(maxCenterPages / 2);
             }
 
             for (let i = start; i <= end; i++) {
@@ -50,14 +45,8 @@ const Pagination: FC<IProps> = ({
             }
         }
         setAllPages(pages);
-    }, [page, limit, totalPages]);
+    }, [page, totalPages]);
 
-    const selectPage = (selectedPage: number) => {
-        setSearchParams((prev) => {
-            prev.set('page', `${selectedPage}`);
-            return prev;
-        });
-    };
     return (
         <nav className={style.NavLinks}>
             <ul className="pagination">

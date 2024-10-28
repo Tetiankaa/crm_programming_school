@@ -1,4 +1,4 @@
 export enum ECourseFormat {
-    STATIC,
-    ONLINE,
+    STATIC = 'static',
+    ONLINE = 'online',
 }

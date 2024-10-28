@@ -5,6 +5,7 @@ import {
     isPending,
     isRejected,
 } from '@reduxjs/toolkit';
+
 import { IError, ILogin, IManager } from '../../interfaces';
 import { authService } from '../../services';
 import { handleAsyncThunkError } from '../../utils';
@@ -13,12 +14,14 @@ interface IState {
     isLoading: boolean;
     error: IError;
     manager: IManager;
+    isAuthenticated: boolean;
 }
 
 const initialState: IState = {
     isLoading: false,
     error: null,
     manager: null,
+    isAuthenticated: null,
 };
 
 const login = createAsyncThunk<
@@ -32,19 +35,38 @@ const login = createAsyncThunk<
         return rejectWithValue(handleAsyncThunkError(err));
     }
 });
+
+const getMe = createAsyncThunk<IManager, void, { rejectValue: IError }>(
+    'authSlice/getMe',
+    async (_, { rejectWithValue }) => {
+        try {
+            return await authService.getMe();
+        } catch (err) {
+            return rejectWithValue(handleAsyncThunkError(err));
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'authSlice',
     initialState: initialState,
-    reducers: {},
+    reducers: {
+        isAuthenticated: (state) => {
+            const access = authService.getAccessToken();
+            access
+                ? (state.isAuthenticated = true)
+                : (state.isAuthenticated = false);
+        },
+    },
     extraReducers: (builder) =>
         builder
-            .addCase(login.fulfilled, (state, action) => {
+            .addMatcher(isFulfilled(login, getMe), (state, action) => {
                 state.manager = action.payload;
             })
             .addMatcher(isPending(login), (state) => {
                 state.isLoading = true;
             })
-            .addMatcher(isRejected(login), (state, action) => {
+            .addMatcher(isRejected(login, getMe), (state, action) => {
                 state.isLoading = false;
                 state.error = {
                     message: action.payload.message,
@@ -59,6 +81,6 @@ const authSlice = createSlice({
 
 const { actions, reducer: authReducer } = authSlice;
 
-const authActions = { ...actions, login };
+const authActions = { ...actions, login, getMe };
 
 export { authReducer, authActions, authSlice };

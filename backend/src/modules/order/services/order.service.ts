@@ -62,7 +62,7 @@ export class OrderService {
     const data = await this.paginationService.paginate<OrderEntity>(
       query,
       this.orderRepository,
-      [{ manager: true }, { group: true }],
+      [{ manager: true }, { group: true }, { comments: { manager: true } }],
     );
 
     return OrderMapper.toOrderListDto(data);
@@ -96,6 +96,7 @@ export class OrderService {
       });
 
       order.comments.push(savedComment);
+      order.comments.sort((a, b) => b.id - a.id);
 
       return OrderMapper.toOrderDto(order);
     });

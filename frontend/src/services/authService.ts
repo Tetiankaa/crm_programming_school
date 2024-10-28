@@ -25,6 +25,14 @@ const authService = {
         );
         this.setTokens(data);
     },
+    async getMe(): Promise<IManager> {
+        const access = this.getAccessToken();
+        const { data } = await apiService.get<IManager>(urls.managers.me, {
+            headers: { Authorization: `Bearer ${access}` },
+        });
+        return data;
+    },
+
     setTokens(tokens: IToken): void {
         localStorage.setItem(ACCESS_TOKEN, tokens.accessToken);
         localStorage.setItem(REFRESH_TOKEN, tokens.refreshToken);
