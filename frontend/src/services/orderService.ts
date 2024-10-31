@@ -5,9 +5,11 @@ import {
     ICourse,
     ICourseFormat,
     ICourseType,
+    ICreateGroup,
     IGroup,
     IOrder,
     IOrderStatus,
+    IOrderUpdate,
     IPaginationRes,
     IQuery,
 } from '../interfaces';
@@ -31,6 +33,13 @@ const orderService = {
         }),
     saveComment: (orderId: number, comment: string): ApiResponse<IOrder> =>
         apiService.post(urls.orders.addComment(orderId), { text: comment }),
+    updateById: (
+        orderId: number,
+        orderToUpdate: IOrderUpdate
+    ): ApiResponse<IOrder> =>
+        apiService.patch(urls.orders.update(orderId), orderToUpdate),
+    createGroup: (group: ICreateGroup): ApiResponse<IGroup> =>
+        apiService.post(urls.orders.groups, group),
 };
 
 export { orderService };

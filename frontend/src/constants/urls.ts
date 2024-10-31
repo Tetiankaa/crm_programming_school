@@ -28,6 +28,7 @@ const urls = {
         course_types: `${orders}${course_types}`,
         download: `${orders}${download}`,
         addComment: (id: number) => `${orders}/${id}${comment}`,
+        update: (id: number) => `${orders}/${id}`,
     },
     managers: {
         base: managers,

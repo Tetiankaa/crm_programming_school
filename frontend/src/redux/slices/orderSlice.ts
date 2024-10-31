@@ -1,16 +1,17 @@
 import {
+    ICommentPaginationRes,
     ICourse,
     ICourseFormat,
     ICourseType,
+    ICreateGroup,
     IError,
     IGroup,
     IOrder,
     IOrderStatus,
+    IOrderUpdate,
     IPaginationRes,
     IQuery,
     ISearchParams,
-    IComment,
-    ICommentPaginationRes,
 } from '../../interfaces';
 import {
     createAsyncThunk,
@@ -154,6 +155,33 @@ const saveComment = createAsyncThunk<
         return rejectWithValue(handleAsyncThunkError(err));
     }
 });
+
+const updateOrder = createAsyncThunk<
+    IOrder,
+    { id: number; order: IOrderUpdate },
+    { rejectValue: IError }
+>('orderSlice/updateOrder', async ({ id, order }, { rejectWithValue }) => {
+    try {
+        const { data } = await orderService.updateById(id, order);
+        return data;
+    } catch (err) {
+        return rejectWithValue(handleAsyncThunkError(err));
+    }
+});
+
+const createGroup = createAsyncThunk<
+    IGroup,
+    { group: ICreateGroup },
+    { rejectValue: IError }
+>('orderSlice/createGroup', async ({ group }, { rejectWithValue }) => {
+    try {
+        const { data } = await orderService.createGroup(group);
+        return data;
+    } catch (err) {
+        return rejectWithValue(handleAsyncThunkError(err));
+    }
+});
+
 const orderSlice = createSlice({
     name: 'orderSlice',
     initialState,
@@ -221,6 +249,22 @@ const orderSlice = createSlice({
                     };
                 }
             })
+            .addCase(updateOrder.fulfilled, (state, action) => {
+                const updatedOrder = action.payload;
+
+                const orderIndex = state.orders.data.findIndex(
+                    (order) => order.id === updatedOrder.id
+                );
+
+                if (orderIndex !== -1) {
+                    state.orders.data[orderIndex] = updatedOrder;
+                }
+            })
+            .addCase(createGroup.fulfilled, (state, action) => {
+                const group = action.payload;
+
+                state.groups.push(group);
+            })
             .addCase(getGroups.fulfilled, (state, action) => {
                 state.groups = action.payload;
             })
@@ -248,7 +292,9 @@ const orderSlice = createSlice({
                     getCourseFormats,
                     getCourseTypes,
                     downloadExcel,
-                    saveComment
+                    saveComment,
+                    updateOrder,
+                    createGroup
                 ),
                 (state, action) => {
                     state.isLoading = false;
@@ -263,7 +309,9 @@ const orderSlice = createSlice({
                     getCourses,
                     getCourseFormats,
                     getCourseTypes,
-                    saveComment
+                    saveComment,
+                    updateOrder,
+                    createGroup
                 ),
                 (state) => {
                     state.isLoading = false;
@@ -284,6 +332,8 @@ const orderActions = {
     getStatuses,
     downloadExcel,
     saveComment,
+    updateOrder,
+    createGroup,
 };
 
 export { orderActions, orderSlice, orderReducer };

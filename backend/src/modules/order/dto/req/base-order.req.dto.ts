@@ -13,11 +13,12 @@ import { ECourse } from '../../../../database/entities/enums/course.enum';
 import { ECourseFormat } from '../../../../database/entities/enums/course-format.enum';
 import { ECourseType } from '../../../../database/entities/enums/course-type.enum';
 import { EOrderStatus } from '../../../../database/entities/enums/order-status.enum';
+import { IsOptionalNotEmpty } from '../../decorators/is-optional-not-empty.decorator';
 import { ValidatedInteger } from '../../decorators/validated-integer.decorator';
 import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-string.decorator';
 
 export class BaseOrderReqDto {
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @ApiProperty({
     example: 1,
     required: false,
@@ -25,7 +26,7 @@ export class BaseOrderReqDto {
   group_id?: number;
 
   @ValidatedTrimmedString()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Length(1, 35)
   @ApiProperty({
     example: 'Olena',
@@ -34,7 +35,7 @@ export class BaseOrderReqDto {
   name?: string;
 
   @ValidatedTrimmedString()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Length(1, 35)
   @ApiProperty({
     example: 'Pavlova',
@@ -43,7 +44,7 @@ export class BaseOrderReqDto {
   surname?: string;
 
   @ValidatedTrimmedString()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Matches(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, {
     message:
       'Email address must be in a valid format (Example: user@example.com)',
@@ -55,21 +56,21 @@ export class BaseOrderReqDto {
   email?: string;
 
   @ValidatedTrimmedString()
-  @IsOptional()
-  @Matches(/^\\d{3}\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/, {
+  @IsOptionalNotEmpty()
+  @Matches(/^$|^\d{3}\s\d{2}\s\d{3}\s\d{2}\s\d{2}$/, {
     message: 'Invalid phone number. (Example: 380 12 345 67 89)',
   })
   @ApiProperty({ example: '380 12 345 67 89', required: false })
   phone?: string;
 
   @ValidatedInteger()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Min(16)
   @Max(90)
   @ApiProperty({ example: 24, required: false })
   age?: number | null;
 
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @IsString()
   @IsEnum(EOrderStatus, {
     message: `Entered order status must be one of the following values: ${Object.values(EOrderStatus)}`,
@@ -77,7 +78,7 @@ export class BaseOrderReqDto {
   @ApiProperty({ example: 'New', required: false })
   status?: EOrderStatus;
 
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @IsString()
   @IsEnum(ECourse, {
     message: `Entered course must be one of the following values: ${Object.values(ECourse)}`,
@@ -85,7 +86,7 @@ export class BaseOrderReqDto {
   @ApiProperty({ example: 'QACX', required: false })
   course?: ECourse;
 
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @IsString()
   @IsEnum(ECourseFormat, {
     message: `Entered course format must be one of the following values: ${Object.values(ECourseFormat)}`,
@@ -93,7 +94,7 @@ export class BaseOrderReqDto {
   @ApiProperty({ example: 'online', required: false })
   course_format?: ECourseFormat;
 
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @IsString()
   @IsEnum(ECourseType, {
     message: `Entered course type must be one of the following values: ${Object.values(ECourseType)}`,
@@ -102,14 +103,14 @@ export class BaseOrderReqDto {
   course_type?: ECourseType;
 
   @ValidatedInteger()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Min(1)
   @Max(2147483647)
   @ApiProperty({ example: 500, required: false })
   sum?: number | null;
 
   @ValidatedInteger()
-  @IsOptional()
+  @IsOptionalNotEmpty()
   @Min(1)
   @Max(2147483647)
   @ApiProperty({ example: 500, required: false })

@@ -21,3 +21,21 @@ export interface IOrder {
     group_name: string;
     comments: IComment[];
 }
+
+export interface IOrderUpdate
+    extends Pick<
+        IOrder,
+        | 'name'
+        | 'surname'
+        | 'email'
+        | 'phone'
+        | 'age'
+        | 'status'
+        | 'course'
+        | 'course_format'
+        | 'course_type'
+        | 'sum'
+        | 'alreadyPaid'
+    > {
+    group_id: number;
+}

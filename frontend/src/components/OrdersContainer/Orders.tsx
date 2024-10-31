@@ -256,60 +256,70 @@ const Orders = () => {
                         />
                     }
                     {
-                        <DropdownMenu
-                            handleOptionChange={handleFilterChange}
-                            items={courses}
-                            itemKey={'id'}
-                            itemLabel={'courseName'}
-                            placeholder={'All courses'}
-                            selectName={'course'}
-                            searchParam={course}
-                        />
+                        <div className={'col-md-2'}>
+                            <DropdownMenu
+                                handleOptionChange={handleFilterChange}
+                                items={courses}
+                                itemKey={'id'}
+                                itemLabel={'courseName'}
+                                placeholder={'All courses'}
+                                selectName={'course'}
+                                selectValue={course}
+                            />
+                        </div>
                     }
                     {
-                        <DropdownMenu
-                            handleOptionChange={handleFilterChange}
-                            items={course_formats}
-                            itemKey={'id'}
-                            itemLabel={'format'}
-                            placeholder={'All formats'}
-                            selectName={'course_format'}
-                            searchParam={course_format}
-                        />
+                        <div className={'col-md-2'}>
+                            <DropdownMenu
+                                handleOptionChange={handleFilterChange}
+                                items={course_formats}
+                                itemKey={'id'}
+                                itemLabel={'format'}
+                                placeholder={'All formats'}
+                                selectName={'course_format'}
+                                selectValue={course_format}
+                            />
+                        </div>
                     }
                     {
-                        <DropdownMenu
-                            handleOptionChange={handleFilterChange}
-                            items={course_types}
-                            itemKey={'id'}
-                            itemLabel={'type'}
-                            placeholder={'All types'}
-                            selectName={'course_type'}
-                            searchParam={course_type}
-                        />
+                        <div className={'col-md-2'}>
+                            <DropdownMenu
+                                handleOptionChange={handleFilterChange}
+                                items={course_types}
+                                itemKey={'id'}
+                                itemLabel={'type'}
+                                placeholder={'All types'}
+                                selectName={'course_type'}
+                                selectValue={course_type}
+                            />
+                        </div>
                     }
                     {
-                        <DropdownMenu
-                            handleOptionChange={handleFilterChange}
-                            items={statuses}
-                            itemKey={'id'}
-                            itemLabel={'status'}
-                            placeholder={'All statuses'}
-                            selectName={'status'}
-                            searchParam={status}
-                        />
+                        <div className={'col-md-2'}>
+                            <DropdownMenu
+                                handleOptionChange={handleFilterChange}
+                                items={statuses}
+                                itemKey={'id'}
+                                itemLabel={'status'}
+                                placeholder={'All statuses'}
+                                selectName={'status'}
+                                selectValue={status}
+                            />
+                        </div>
                     }
 
                     {
-                        <DropdownMenu
-                            selectName={'group'}
-                            items={groups}
-                            handleOptionChange={handleFilterChange}
-                            searchParam={group}
-                            placeholder={'All groups'}
-                            itemKey={'id'}
-                            itemLabel={'name'}
-                        />
+                        <div className={'col-md-2'}>
+                            <DropdownMenu
+                                selectName={'group'}
+                                items={groups}
+                                handleOptionChange={handleFilterChange}
+                                selectValue={group}
+                                placeholder={'All groups'}
+                                itemKey={'id'}
+                                itemLabel={'name'}
+                            />
+                        </div>
                     }
 
                     {

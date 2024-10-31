@@ -42,7 +42,7 @@ const Comments: FC<IProps> = ({ comments, orderId, managerName }) => {
     });
 
     useEffect(() => {
-        if (comments.length > 0) {
+        if (comments?.length > 0) {
             const skip = (page - 1) * limit;
             dispatch(
                 orderActions.setPagination({
@@ -113,11 +113,11 @@ const Comments: FC<IProps> = ({ comments, orderId, managerName }) => {
                         />
                         <button
                             type={'submit'}
-                            onClick={() => console.log('clocked')}
-                            className={`${errors?.text?.message || managerName !== manager.name ? style.CommentSaveDisabledButton : style.CommentSaveButton}`}
+                            className={`${errors?.text?.message || (managerName !== null && managerName !== manager.name) ? style.DisabledButton : style.Button}`}
                             disabled={
                                 !!errors?.text?.message ||
-                                managerName !== manager.name
+                                (managerName !== null &&
+                                    managerName !== manager.name)
                             }
                         >
                             Save
