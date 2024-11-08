@@ -1,4 +1,5 @@
 import Joi from 'joi';
+
 import { ECourse, ECourseFormat, ECourseType, EOrderStatus } from '../enums';
 
 const positiveNumberMessages = {

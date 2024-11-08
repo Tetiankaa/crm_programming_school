@@ -21,6 +21,8 @@ import { ManagerEntity } from '../../../database/entities/manager.entity';
 import { RefreshTokenEntity } from '../../../database/entities/refresh-token.entity';
 import { ManagerWithOrderStatisticsResDto } from '../../manager/dto/res/manager-with-order-statistics.res.dto';
 import { ManagerMapper } from '../../manager/mappers/manager.mapper';
+import { OrderStatistics } from '../../order/interfaces/order-statistics.interface';
+import { OrderService } from '../../order/services/order.service';
 import { LoginReqDto } from '../dto/req/login.req.dto';
 import { ManagerPasswordReqDTO } from '../dto/req/manager-password.req.dto';
 import { RegisterReqDto } from '../dto/req/register.req.dto';
@@ -45,6 +47,7 @@ export class AuthService {
     private readonly configService: ConfigService<Configs>,
     private readonly tokenService: TokenService,
     private readonly authCacheService: AuthCacheService,
+    private readonly orderService: OrderService,
   ) {
     this.securityConfig = this.configService.get<SecurityConfig>('security');
     this.authConfig = this.configService.get<AuthConfig>('auth');
@@ -232,7 +235,7 @@ export class AuthService {
   public async banManager(
     managerId: number,
     userData: IUserData,
-  ): Promise<void> {
+  ): Promise<ManagerWithOrderStatisticsResDto> {
     return await this.entityManager.transaction(async (entityManager) => {
       const managerRepository = entityManager.getRepository(ManagerEntity);
       const refreshTokenRepository =
@@ -242,14 +245,17 @@ export class AuthService {
         throw new BadRequestException(errorMessages.BAN_NOT_POSSIBLE);
       }
 
-      const manager = await this.findManagerOrThrow(
-        managerId,
-        managerRepository,
+      let manager = await this.findManagerOrThrow(managerId, managerRepository);
+      const statistics = await this.orderService.getOrdersStatisticsByManagerId(
+        manager.id,
       );
 
       if (manager.is_active) {
         await Promise.all([
-          managerRepository.save({ ...manager, is_active: false }),
+          (manager = await managerRepository.save({
+            ...manager,
+            is_active: false,
+          })),
           this.deleteRefreshAccessTokens(managerId, refreshTokenRepository),
           this.deleteActionTokens(
             EActionTokenType.RECOVERY_PASSWORD,
@@ -258,21 +264,26 @@ export class AuthService {
           this.deleteActionTokens(EActionTokenType.ACTIVATE_MANAGER, managerId),
         ]);
       }
+      return ManagerMapper.toManagerWithOrderStatisticsDto(manager, statistics);
     });
   }
 
-  public async unbanManager(managerId: number): Promise<void> {
+  public async unbanManager(
+    managerId: number,
+  ): Promise<ManagerWithOrderStatisticsResDto> {
     return await this.entityManager.transaction(async (entityManager) => {
       const managerRepository = entityManager.getRepository(ManagerEntity);
 
-      const manager = await this.findManagerOrThrow(
-        managerId,
-        managerRepository,
+      let manager = await this.findManagerOrThrow(managerId, managerRepository);
+      const statistics = await this.orderService.getOrdersStatisticsByManagerId(
+        manager.id,
       );
 
       if (!manager.is_active) {
-        await managerRepository.save({ ...manager, is_active: true });
+        manager = await managerRepository.save({ ...manager, is_active: true });
       }
+
+      return ManagerMapper.toManagerWithOrderStatisticsDto(manager, statistics);
     });
   }
 

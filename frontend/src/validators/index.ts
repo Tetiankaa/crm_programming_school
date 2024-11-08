@@ -1,3 +1,3 @@
-export * from './loginValidator';
+export * from './authValidator';
 export * from './commentValidator';
 export * from './orderValidator';

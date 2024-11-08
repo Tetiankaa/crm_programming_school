@@ -71,6 +71,7 @@ export class QueryReqDto extends BasePaginationReqDto {
   phone?: string;
 
   @ValidatedInteger()
+  @Type(() => Number)
   @IsOptional()
   @ApiProperty({
     required: false,

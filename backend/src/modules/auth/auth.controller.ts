@@ -14,6 +14,7 @@ import {
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -162,7 +163,7 @@ export class AuthController {
     );
   }
 
-  @Post('recovery-password/:managerId')
+  @Post('recovery/:managerId')
   @Roles(EUserRole.ADMIN)
   @UseGuards(RolesGuard)
   @ApiAuth()
@@ -212,13 +213,13 @@ export class AuthController {
   }
 
   @Patch('ban/:managerId')
-  @HttpCode(statusCodes.NO_CONTENT)
   @Roles(EUserRole.ADMIN)
   @UseGuards(RolesGuard)
   @ApiAuth()
   @ApiBadRequestResponse({ description: errorMessages.BAD_REQUEST })
-  @ApiNoContentResponse({
+  @ApiOkResponse({
     description: 'Manager was successfully banned',
+    type: ManagerWithOrderStatisticsResDto,
   })
   @ApiOperation({
     description:
@@ -227,17 +228,17 @@ export class AuthController {
   public async banManager(
     @Param('managerId', ParseIntPipe) managerId: number,
     @CurrentUser() userData: IUserData,
-  ): Promise<void> {
-    await this.authService.banManager(managerId, userData);
+  ): Promise<ManagerWithOrderStatisticsResDto> {
+    return await this.authService.banManager(managerId, userData);
   }
 
   @Patch('unban/:managerId')
-  @HttpCode(statusCodes.NO_CONTENT)
   @Roles(EUserRole.ADMIN)
   @UseGuards(RolesGuard)
   @ApiAuth()
-  @ApiNoContentResponse({
+  @ApiOkResponse({
     description: 'Manager successfully was unbanned',
+    type: ManagerWithOrderStatisticsResDto,
   })
   @ApiOperation({
     description:
@@ -245,7 +246,7 @@ export class AuthController {
   })
   public async unbanManager(
     @Param('managerId', ParseIntPipe) managerId: number,
-  ): Promise<void> {
-    await this.authService.unbanManager(managerId);
+  ): Promise<ManagerWithOrderStatisticsResDto> {
+    return await this.authService.unbanManager(managerId);
   }
 }

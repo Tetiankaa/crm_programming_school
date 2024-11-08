@@ -1,4 +1,6 @@
 import { FC, useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 import { IComment, ICreateComment } from '../../interfaces';
 import style from './Order.module.css';
@@ -6,8 +8,6 @@ import { Comment } from './Comment';
 import { Pagination } from '../PaginationContainer';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { orderActions } from '../../redux/slices';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { joiResolver } from '@hookform/resolvers/joi';
 import { commentValidator } from '../../validators';
 
 interface IProps {
@@ -20,7 +20,7 @@ const Comments: FC<IProps> = ({ comments, orderId, managerName }) => {
     const dispatch = useAppDispatch();
 
     const { paginationComments } = useAppSelector((state) => state.order);
-    const { manager } = useAppSelector((state) => state.auth);
+    const { manager } = useAppSelector((state) => state.manager);
 
     const orderPagination = paginationComments.find(
         (obj) => obj.orderId === orderId

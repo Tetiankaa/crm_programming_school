@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { authActions, orderActions } from '../../redux/slices';
+import { managerActions, orderActions } from '../../redux/slices';
 import {
     ECourse,
     ECourseFormat,
@@ -45,7 +45,7 @@ const Orders = () => {
     } = useAppSelector((state) => state.order);
 
     const { manager: authManager, isAuthenticated } = useAppSelector(
-        (state) => state.auth
+        (state) => state.manager
     );
 
     const [searchParams, setSearchParams] = useSearchParams(defaultParams);
@@ -177,12 +177,12 @@ const Orders = () => {
     );
     useEffect(() => {
         if (!manager && isAuthenticated) {
-            dispatch(authActions.getMe());
+            dispatch(managerActions.getMe());
         }
     }, [dispatch, isAuthenticated, manager]);
 
     useEffect(() => {
-        dispatch(authActions.isAuthenticated());
+        dispatch(managerActions.isAuthenticated());
         dispatch(orderActions.getGroups());
         dispatch(orderActions.getCourses());
         dispatch(orderActions.getStatuses());

@@ -1,5 +1,6 @@
-import { IError } from '../interfaces';
 import axios from 'axios';
+
+import { IError } from '../interfaces';
 
 export const handleAsyncThunkError = (error: unknown): IError => {
     let errorMsg = 'An unexpected error occurred';

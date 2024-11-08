@@ -1,13 +1,13 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
 
 import style from './Order.module.css';
 import { ICreateGroup, IOrder, IOrderUpdate } from '../../interfaces';
 import { formatDateToUkrainianLocale } from '../../utils';
 import { Comments } from './Comments';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { DropdownMenu } from './DropdownMenu';
-import { joiResolver } from '@hookform/resolvers/joi';
 import { groupValidator, orderValidator } from '../../validators';
 import { orderActions } from '../../redux/slices';
 
@@ -39,7 +39,7 @@ const Order: FC<IProps> = ({ order }) => {
     const [showInfo, setShowInfo] = useState<boolean>(false);
     const [textInput, setTextInput] = useState<boolean>(false);
 
-    const { manager } = useAppSelector((state) => state.auth);
+    const { manager } = useAppSelector((state) => state.manager);
     const { groups, statuses, courses, course_formats, course_types } =
         useAppSelector((state) => state.order);
 
@@ -83,6 +83,23 @@ const Order: FC<IProps> = ({ order }) => {
         resolver: joiResolver(groupValidator),
     });
 
+    useEffect(() => {
+        reset({
+            group_id: groupObj?.id,
+            status,
+            course,
+            course_format,
+            course_type,
+            sum,
+            phone,
+            age,
+            surname,
+            alreadyPaid,
+            name,
+            email,
+        });
+    }, [order, reset]);
+
     const rowColor =
         Number(id) % 2 === 0
             ? `${style.TableRowDark}`
@@ -91,7 +108,7 @@ const Order: FC<IProps> = ({ order }) => {
 
     const handleOrderUpdate: SubmitHandler<IOrderUpdate> = (value) => {
         dispatch(orderActions.updateOrder({ id, order: value }));
-        const closeBtn = document.getElementById('closeBtn');
+        const closeBtn = document.getElementById(`closeBtn-${id}`);
         closeBtn.click();
     };
 
@@ -145,7 +162,7 @@ const Order: FC<IProps> = ({ order }) => {
                                     <p>UTM: {utm || '-'}</p>
                                     <button
                                         type={'button'}
-                                        data-bs-target="#updateOrderModal"
+                                        data-bs-target={`#updateOrderModal-${id}`}
                                         data-bs-toggle="modal"
                                         className={`${manager_name !== null && manager_name !== manager.name ? style.DisabledButton : style.Button}`}
                                         disabled={
@@ -160,9 +177,9 @@ const Order: FC<IProps> = ({ order }) => {
                                 {/*start*/}
                                 <div
                                     className="modal fade"
-                                    id="updateOrderModal"
+                                    id={`updateOrderModal-${id}`}
                                     tabIndex={+'-1'}
-                                    aria-labelledby="exampleModalLabel"
+                                    aria-labelledby={`modalLabel-${id}`}
                                     aria-hidden="true"
                                     data-bs-keyboard="false"
                                 >
@@ -171,7 +188,7 @@ const Order: FC<IProps> = ({ order }) => {
                                             <div className="modal-header">
                                                 <h1
                                                     className="modal-title fs-5"
-                                                    id="exampleModalLabel"
+                                                    id={`modalLabel-${id}`}
                                                 >
                                                     Order #{id}
                                                 </h1>
@@ -636,7 +653,7 @@ const Order: FC<IProps> = ({ order }) => {
                                             <div className="modal-footer">
                                                 <button
                                                     type="button"
-                                                    id={'closeBtn'}
+                                                    id={`closeBtn-${id}`}
                                                     className="btn btn-secondary"
                                                     data-bs-dismiss="modal"
                                                     onClick={() => reset()}

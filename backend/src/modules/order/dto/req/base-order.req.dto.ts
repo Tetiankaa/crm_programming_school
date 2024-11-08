@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsOptional,
@@ -7,6 +8,7 @@ import {
   Matches,
   Max,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 import { ECourse } from '../../../../database/entities/enums/course.enum';
@@ -19,6 +21,7 @@ import { ValidatedTrimmedString } from '../../decorators/validated-trimmed-strin
 
 export class BaseOrderReqDto {
   @IsOptionalNotEmpty()
+  @ValidatedInteger()
   @ApiProperty({
     example: 1,
     required: false,
@@ -63,8 +66,12 @@ export class BaseOrderReqDto {
   @ApiProperty({ example: '380 12 345 67 89', required: false })
   phone?: string;
 
+  @Transform(({ value }) =>
+    value === '' || isNaN(value) || value === null ? null : Number(value),
+  )
+  @ValidateIf((_, value) => value !== null)
   @ValidatedInteger()
-  @IsOptionalNotEmpty()
+  @IsOptional()
   @Min(16)
   @Max(90)
   @ApiProperty({ example: 24, required: false })
@@ -102,15 +109,23 @@ export class BaseOrderReqDto {
   @ApiProperty({ example: 'premium', required: false })
   course_type?: ECourseType;
 
+  @Transform(({ value }) =>
+    value === '' || isNaN(value) || value === null ? null : Number(value),
+  )
+  @ValidateIf((_, value) => value !== null)
   @ValidatedInteger()
-  @IsOptionalNotEmpty()
+  @IsOptional()
   @Min(1)
   @Max(2147483647)
   @ApiProperty({ example: 500, required: false })
   sum?: number | null;
 
+  @Transform(({ value }) =>
+    value === '' || isNaN(value) || value === null ? null : Number(value),
+  )
+  @ValidateIf((_, value) => value !== null)
   @ValidatedInteger()
-  @IsOptionalNotEmpty()
+  @IsOptional()
   @Min(1)
   @Max(2147483647)
   @ApiProperty({ example: 500, required: false })

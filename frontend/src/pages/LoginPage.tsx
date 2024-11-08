@@ -1,5 +1,5 @@
 import { Login } from '../components';
-import style from './LoginPage.module.css';
+import style from './AuthPage.module.css';
 
 const LoginPage = () => {
     return (

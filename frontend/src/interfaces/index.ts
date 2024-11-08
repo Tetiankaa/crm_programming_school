@@ -13,3 +13,8 @@ export * from './courseFormatInterface';
 export * from './courseTypeInterface';
 export * from './serachParamsInterface';
 export * from './commentInterface';
+export * from './managerStatisticsInterface';
+export * from './orderStatisticsInterface';
+export * from './activateTokenInterface';
+export * from './activationLinkInterface';
+export * from './setPasswordInterface';

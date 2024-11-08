@@ -1,4 +1,12 @@
 import {
+    createAsyncThunk,
+    createSlice,
+    isFulfilled,
+    isPending,
+    isRejected,
+} from '@reduxjs/toolkit';
+
+import {
     ICommentPaginationRes,
     ICourse,
     ICourseFormat,
@@ -13,13 +21,6 @@ import {
     IQuery,
     ISearchParams,
 } from '../../interfaces';
-import {
-    createAsyncThunk,
-    createSlice,
-    isFulfilled,
-    isPending,
-    isRejected,
-} from '@reduxjs/toolkit';
 import { orderService } from '../../services';
 import { handleAsyncThunkError } from '../../utils';
 

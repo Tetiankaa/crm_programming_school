@@ -1,7 +1,16 @@
 const baseURL = 'http://localhost:4000';
 
-const login = '/auth/login';
-const refresh = '/auth/refresh';
+const auth = '/auth';
+const login = `${auth}/login`;
+const refresh = `${auth}/refresh`;
+const logout = `${auth}/logout`;
+const register = `${auth}/register`;
+const recovery = `${auth}/recovery`;
+const activate = `${auth}/activate`;
+const activateManager = `${auth}/activate-manager`;
+const recoveryPassword = `${auth}/recovery-password`;
+const ban = `${auth}/ban`;
+const unban = `${auth}/unban`;
 
 const managers = '/managers';
 
@@ -18,6 +27,14 @@ const urls = {
     auth: {
         login,
         refresh,
+        logout,
+        register,
+        activateManager,
+        recoveryPassword,
+        ban: (id: number) => `${ban}/${id}`,
+        unban: (id: number) => `${unban}/${id}`,
+        activate: (id: number) => `${activate}/${id}`,
+        recovery: (id: number) => `${recovery}/${id}`,
     },
     orders: {
         base: orders,

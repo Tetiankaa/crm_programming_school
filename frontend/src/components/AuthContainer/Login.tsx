@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { joiResolver } from '@hookform/resolvers/joi';
-
-import style from './Login.module.css';
 import { v4 as uuidv4 } from 'uuid';
+
+import style from './Auth.module.css';
 import { ILogin } from '../../interfaces';
 import { loginValidator } from '../../validators';
 import { authActions } from '../../redux/slices';
@@ -18,7 +18,9 @@ const Login = () => {
     const [checkPassword, setCheckPassword] = useState<boolean>(false);
 
     const dispatch = useAppDispatch();
-    const { error, isLoading, manager } = useAppSelector((state) => state.auth);
+
+    const { error, isLoading } = useAppSelector((state) => state.auth);
+    const { manager } = useAppSelector((state) => state.manager);
 
     const navigate = useNavigate();
 
@@ -57,7 +59,7 @@ const Login = () => {
                 'd-flex justify-content-center align-items-center min-vh-100'
             }
         >
-            <div className={`p-4 ${style.LoginCard}`}>
+            <div className={`p-4 ${style.FormCard}`}>
                 <h3 className={`text-lg-start text-white mb-4`}>
                     Login
                     <hr />
