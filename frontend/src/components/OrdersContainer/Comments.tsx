@@ -54,7 +54,7 @@ const Comments: FC<IProps> = ({ comments, orderId, managerName }) => {
                 })
             );
         }
-    }, [comments, orderId, page]);
+    }, [comments, orderId, page, dispatch, limit]);
 
     const selectPage = (newPage: number) => {
         dispatch(

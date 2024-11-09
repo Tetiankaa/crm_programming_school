@@ -45,7 +45,7 @@ const Pagination: FC<IProps> = ({
             }
         }
         setAllPages(pages);
-    }, [page, totalPages]);
+    }, [page, totalPages, maxEdgePages, maxCenterPages]);
 
     return (
         <nav className={style.NavLinks}>

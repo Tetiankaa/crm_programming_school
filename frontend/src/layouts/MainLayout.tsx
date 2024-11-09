@@ -10,9 +10,8 @@ const MainLayout = () => {
     const dispatch = useAppDispatch();
     const location = useLocation();
 
-    const publicRoutes = ['/login', '/activate', '/reset-password'];
-
     useEffect(() => {
+        const publicRoutes = ['/login', '/activate', '/reset-password'];
         const isPublicRoute = publicRoutes.some((route) =>
             location.pathname.startsWith(route)
         );

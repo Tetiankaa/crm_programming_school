@@ -84,20 +84,7 @@ const Order: FC<IProps> = ({ order }) => {
     });
 
     useEffect(() => {
-        reset({
-            group_id: groupObj?.id,
-            status,
-            course,
-            course_format,
-            course_type,
-            sum,
-            phone,
-            age,
-            surname,
-            alreadyPaid,
-            name,
-            email,
-        });
+        reset({ ...order, group_id: groupObj?.id });
     }, [order, reset]);
 
     const rowColor =

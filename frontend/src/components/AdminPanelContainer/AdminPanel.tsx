@@ -27,7 +27,7 @@ const AdminPanel = () => {
     } = useAppSelector((state) => state.manager);
     const { activatingLink } = useAppSelector((state) => state.auth);
 
-    const [searchParams, setSearchParams] = useSearchParams(defaultParams);
+    const [searchParams] = useSearchParams(defaultParams);
 
     const {
         register,
@@ -70,7 +70,7 @@ const AdminPanel = () => {
         const query: Partial<IQuery> = getQueryParams();
 
         dispatch(managerActions.getStatistics({ query }));
-    }, [getQueryParams]);
+    }, [getQueryParams, dispatch]);
 
     const handleAddManager: SubmitHandler<ICreateManager> = (value) => {
         dispatch(authActions.register({ managerData: value }));
