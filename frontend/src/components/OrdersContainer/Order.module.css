@@ -167,3 +167,103 @@
     background-image: radial-gradient(100% 100% at 100% 0, #a73cdd 0, #8631a1 100%);
 }
 
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modalOverlayActive {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background-color: #ffffff;
+    width: 500px;
+    max-width: 90%;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    max-height: 90vh;
+    overflow-y: hidden;
+}
+
+.modalContent {
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.modalHeaderTitle {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.modalBody {
+    margin: 20px 0;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dee2e6;
+    margin-top: 20px;
+}
+
+.modalClose {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.modalClose:hover {
+    color: #ff0000;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #a927ba;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: rgba(169, 39, 186, 0.72);
+}

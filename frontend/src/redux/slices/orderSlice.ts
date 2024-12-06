@@ -19,7 +19,6 @@ import {
     IOrderUpdate,
     IPaginationRes,
     IQuery,
-    ISearchParams,
 } from '../../interfaces';
 import { orderService } from '../../services';
 import { handleAsyncThunkError } from '../../utils';
@@ -29,7 +28,6 @@ interface IState {
     error: IError;
     orders: IPaginationRes<IOrder>;
     paginationComments: ICommentPaginationRes[];
-    filters: IQuery;
     groups: IGroup[];
     statuses: IOrderStatus[];
     courses: ICourse[];
@@ -40,7 +38,6 @@ const initialState: IState = {
     isLoading: false,
     error: null,
     orders: null,
-    filters: {},
     course_formats: [],
     course_types: [],
     courses: [],
@@ -187,22 +184,6 @@ const orderSlice = createSlice({
     name: 'orderSlice',
     initialState,
     reducers: {
-        setFilter: (state, action) => {
-            const { key, value } = action.payload as ISearchParams;
-            state.filters = {
-                ...state.filters,
-                [key]: value,
-            };
-        },
-        resetFilter: (state) => {
-            state.filters = {
-                name: '',
-                surname: '',
-                email: '',
-                phone: '',
-                age: null,
-            };
-        },
         setPagination: (state, action) => {
             const pagination = action.payload as ICommentPaginationRes;
             const index = state.paginationComments.findIndex(
@@ -258,7 +239,14 @@ const orderSlice = createSlice({
                 );
 
                 if (orderIndex !== -1) {
-                    state.orders.data[orderIndex] = updatedOrder;
+                    const existingOrder = state.orders.data[orderIndex];
+                    const existingComments = existingOrder.comments;
+
+                    state.orders.data[orderIndex] = {
+                        ...existingOrder,
+                        ...updatedOrder,
+                        comments: existingComments,
+                    };
                 }
             })
             .addCase(createGroup.fulfilled, (state, action) => {

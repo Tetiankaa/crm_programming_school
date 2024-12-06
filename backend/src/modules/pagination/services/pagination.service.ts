@@ -71,10 +71,9 @@ export class PaginationService {
       });
     }
 
-    const [data, totalCount] = await qb
-      .skip(skip)
-      .take(limit)
-      .getManyAndCount();
+    const [data, totalCount] = await (limit === 0
+      ? qb.skip(skip).getManyAndCount()
+      : qb.skip(skip).take(limit).getManyAndCount());
 
     return {
       data,

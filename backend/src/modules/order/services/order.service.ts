@@ -174,12 +174,22 @@ export class OrderService {
         where: { id: userData.userId },
       });
 
-      const order = await this.saveManagerIfNotExistsAndUpdateStatus(
-        orderId,
-        manager,
-        orderRepository,
-        ['manager', 'group'],
-      );
+      let order = await orderRepository.findOne({
+        where: { id: orderId },
+        relations: ['manager', 'group'],
+      });
+
+      let assignedNewManager: boolean = false;
+
+      if (order.status === EOrderStatus.NEW && !order.manager) {
+        order = { ...order, manager: manager, status: EOrderStatus.IN_WORK };
+        assignedNewManager = true;
+      }
+
+      if (dto.status === EOrderStatus.NEW && !assignedNewManager) {
+        order.manager = null;
+        order.status = EOrderStatus.NEW;
+      }
 
       const updatedOrder = await orderRepository.save({
         ...order,
@@ -191,7 +201,7 @@ export class OrderService {
   }
 
   public async createWorkbook(query: QueryReqDto): Promise<Workbook> {
-    const orders = await this.getAll(query);
+    const orders = await this.getAll({ ...query, limit: 0 });
 
     return this.createAndFormatWorksheet(orders.data);
   }
@@ -252,9 +262,13 @@ export class OrderService {
       Object.entries(dto).map(([key, value]) => {
         if (key === 'sum' || key === 'alreadyPaid' || key === 'age') {
           return [key, value];
-        } else {
-          return [key, !value ? entity[key] : value];
         }
+
+        if (key === 'status' || key === 'manager') {
+          return [key, entity[key]];
+        }
+
+        return [key, !value ? entity[key] : value];
       }),
     );
   }

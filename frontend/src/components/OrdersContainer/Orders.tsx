@@ -1,8 +1,16 @@
 import { useSearchParams } from 'react-router-dom';
-import { ChangeEvent, useCallback, useEffect } from 'react';
+import {
+    ChangeEvent,
+    ChangeEventHandler,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import debounce from 'lodash.debounce';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { managerActions, orderActions } from '../../redux/slices';
@@ -36,7 +44,6 @@ const Orders = () => {
         error,
         isLoading,
         orders,
-        filters,
         course_types,
         courses,
         course_formats,
@@ -115,41 +122,74 @@ const Orders = () => {
     ]);
 
     const handleOrderBy = (selectedOrder: EOrderFieldsAsc) => {
-        if (!order.startsWith('-') && selectedOrder === order) {
+        if (order && !order.startsWith('-') && selectedOrder === order) {
             setSearchParams((prev) => {
                 prev.set('order', `-${selectedOrder}`);
+                prev.set('page', defaultParams.page);
                 return prev;
             });
         } else {
             setSearchParams((prev) => {
                 prev.set('order', selectedOrder);
+                prev.set('page', defaultParams.page);
                 return prev;
             });
         }
     };
 
-    const handleFilterChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-            e.preventDefault();
-            const { name: inputName, value } = e.target;
+    const [localFilters, setLocalFilters] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        phone: '',
+        age: '',
+    });
 
-            setSearchParams((prev) => {
-                if (value) {
-                    prev.set(inputName, value);
-                } else {
-                    prev.delete(inputName);
-                }
-                return prev;
-            });
-            dispatch(orderActions.setFilter({ inputName, value }));
-        },
-        [dispatch, setSearchParams]
+    useEffect(() => {
+        setLocalFilters({
+            name: searchParams.get('name') || '',
+            surname: searchParams.get('surname') || '',
+            email: searchParams.get('email') || '',
+            phone: searchParams.get('phone') || '',
+            age: searchParams.get('age') || '',
+        });
+    }, [searchParams]);
+
+    const debouncedHandleFilterChange = useMemo(
+        () =>
+            debounce((inputName: string, value: string) => {
+                setSearchParams((prev) => {
+                    if (value) {
+                        prev.set(inputName, value);
+                        prev.set('page', defaultParams.page);
+                    } else {
+                        prev.delete(inputName);
+                    }
+                    return prev;
+                });
+            }, 300),
+        [setSearchParams]
     );
+
+    const handleFilterChange: ChangeEventHandler<
+        HTMLInputElement | HTMLSelectElement
+    > = useCallback((e) => {
+        const { name: inputName, value } = e.target;
+        setLocalFilters((prev) => ({
+            ...prev,
+            [inputName]: value,
+        }));
+        debouncedHandleFilterChange(inputName, value);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            debouncedHandleFilterChange.cancel();
+        };
+    }, [debouncedHandleFilterChange]);
 
     const handleReloadPage = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-
-        dispatch(orderActions.resetFilter());
         setSearchParams(defaultParams);
     };
     const handleDownloadExcelFile = (
@@ -167,6 +207,7 @@ const Orders = () => {
             setSearchParams((prev) => {
                 if (checked) {
                     prev.set(inputName, authManager?.name || '');
+                    prev.set('page', defaultParams.page);
                 } else {
                     prev.delete(inputName);
                 }
@@ -210,7 +251,7 @@ const Orders = () => {
                     {
                         <TextInput
                             placeholder={'Name'}
-                            value={filters.name || name}
+                            value={localFilters.name}
                             handleInputChange={handleFilterChange}
                             inputName={'name'}
                             register={register}
@@ -219,7 +260,7 @@ const Orders = () => {
                     {
                         <TextInput
                             placeholder={'Surname'}
-                            value={filters.surname || surname}
+                            value={localFilters.surname}
                             handleInputChange={handleFilterChange}
                             inputName={'surname'}
                             register={register}
@@ -228,7 +269,7 @@ const Orders = () => {
                     {
                         <TextInput
                             placeholder={'Email'}
-                            value={filters.email || email}
+                            value={localFilters.email}
                             handleInputChange={handleFilterChange}
                             inputName={'email'}
                             register={register}
@@ -237,7 +278,7 @@ const Orders = () => {
                     {
                         <TextInput
                             placeholder={'Phone'}
-                            value={filters.phone || phone}
+                            value={localFilters.phone}
                             handleInputChange={handleFilterChange}
                             inputName={'phone'}
                             register={register}
@@ -246,10 +287,7 @@ const Orders = () => {
                     {
                         <TextInput
                             placeholder={'Age'}
-                            value={
-                                (filters.age && filters.age.toString()) ||
-                                (age && age.toString())
-                            }
+                            value={localFilters.age.toString()}
                             handleInputChange={handleFilterChange}
                             inputName={'age'}
                             register={register}

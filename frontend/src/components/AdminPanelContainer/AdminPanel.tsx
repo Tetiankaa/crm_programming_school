@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { EOrderFieldsAsc, EOrderFieldsDesc } from '../../enums';
+import { EOrderFieldsAsc, EOrderFieldsDesc, EUserRole } from '../../enums';
 import { ICreateManager, IQuery } from '../../interfaces';
 import { Spinner } from '../SpinnerContainer';
 import orderModuleStyle from '../OrdersContainer/Order.module.css';
@@ -24,10 +24,13 @@ const AdminPanel = () => {
     const {
         statistics: { managers, orders_statistics },
         isLoading,
+        manager: authManager,
     } = useAppSelector((state) => state.manager);
     const { activatingLink } = useAppSelector((state) => state.auth);
 
     const [searchParams] = useSearchParams(defaultParams);
+
+    const navigate = useNavigate();
 
     const {
         register,
@@ -65,6 +68,16 @@ const AdminPanel = () => {
     const [copied, setCopied] = useState<boolean>(false);
     const [activationDoneForManager, setActivationDoneForManager] =
         useState<number>(null);
+
+    useEffect(() => {
+        dispatch(managerActions.getMe());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (authManager && authManager.user_role !== EUserRole.ADMIN) {
+            navigate('/orders');
+        }
+    }, [authManager, navigate]);
 
     useEffect(() => {
         const query: Partial<IQuery> = getQueryParams();

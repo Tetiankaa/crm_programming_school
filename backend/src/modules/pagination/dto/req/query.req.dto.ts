@@ -112,6 +112,7 @@ export class QueryReqDto extends BasePaginationReqDto {
 
   @ValidatedInteger()
   @IsOptional()
+  @Type(() => Number)
   @ApiProperty({
     example: 1,
     required: false,

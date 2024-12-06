@@ -38,6 +38,7 @@ const Order: FC<IProps> = ({ order }) => {
 
     const [showInfo, setShowInfo] = useState<boolean>(false);
     const [textInput, setTextInput] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const { manager } = useAppSelector((state) => state.manager);
     const { groups, statuses, courses, course_formats, course_types } =
@@ -48,13 +49,15 @@ const Order: FC<IProps> = ({ order }) => {
     const groupObj = groups.find((group) => group.name === group_name);
 
     const {
-        register,
-        reset,
-        handleSubmit,
-        setValue,
-        watch,
-        formState: { errors },
+        register: orderRegister,
+        reset: orderReset,
+        handleSubmit: orderHandleSubmit,
+        setValue: orderSetValue,
+        watch: orderWatch,
+        formState: { errors: orderErrors },
     } = useForm<IOrderUpdate>({
+        mode: 'all',
+        resolver: joiResolver(orderValidator),
         defaultValues: {
             group_id: groupObj?.id,
             status,
@@ -69,8 +72,6 @@ const Order: FC<IProps> = ({ order }) => {
             name,
             email,
         },
-        mode: 'onBlur',
-        resolver: joiResolver(orderValidator),
     });
 
     const {
@@ -84,8 +85,21 @@ const Order: FC<IProps> = ({ order }) => {
     });
 
     useEffect(() => {
-        reset({ ...order, group_id: groupObj?.id });
-    }, [order, reset]);
+        orderReset({
+            group_id: groupObj?.id,
+            status: order.status,
+            course: order.course,
+            course_format: order.course_format,
+            course_type: order.course_type,
+            sum: order.sum,
+            phone: order.phone,
+            age: order.age,
+            surname: order.surname,
+            alreadyPaid: order.alreadyPaid,
+            name: order.name,
+            email: order.email,
+        });
+    }, [order, orderReset]);
 
     const rowColor =
         Number(id) % 2 === 0
@@ -95,14 +109,13 @@ const Order: FC<IProps> = ({ order }) => {
 
     const handleOrderUpdate: SubmitHandler<IOrderUpdate> = (value) => {
         dispatch(orderActions.updateOrder({ id, order: value }));
-        const closeBtn = document.getElementById(`closeBtn-${id}`);
-        closeBtn.click();
+        setIsModalOpen(false);
     };
 
     const handleDropdownChange = (e: ChangeEvent<HTMLSelectElement>) => {
         e.preventDefault();
         const { name: inputName, value } = e.target;
-        setValue(inputName as keyof IOrderUpdate, value);
+        orderSetValue(inputName as keyof IOrderUpdate, value);
     };
 
     const handleGroupCreate: SubmitHandler<ICreateGroup> = (value) => {
@@ -136,6 +149,7 @@ const Order: FC<IProps> = ({ order }) => {
                 </td>
                 <td>{!manager_name ? '-' : manager_name}</td>
             </tr>
+
             {showInfo && (
                 <tr>
                     <td
@@ -149,46 +163,50 @@ const Order: FC<IProps> = ({ order }) => {
                                     <p>UTM: {utm || '-'}</p>
                                     <button
                                         type={'button'}
-                                        data-bs-target={`#updateOrderModal-${id}`}
-                                        data-bs-toggle="modal"
                                         className={`${manager_name !== null && manager_name !== manager.name ? style.DisabledButton : style.Button}`}
                                         disabled={
                                             manager_name !== null &&
                                             manager_name !== manager.name
                                         }
                                         style={{ marginLeft: 0 }}
+                                        onClick={() => setIsModalOpen(true)}
                                     >
                                         Update order
                                     </button>
                                 </div>
-                                {/*start*/}
+
                                 <div
-                                    className="modal fade"
-                                    id={`updateOrderModal-${id}`}
-                                    tabIndex={+'-1'}
-                                    aria-labelledby={`modalLabel-${id}`}
-                                    aria-hidden="true"
-                                    data-bs-keyboard="false"
+                                    className={`${style.modalOverlay} ${
+                                        isModalOpen
+                                            ? style.modalOverlayActive
+                                            : ''
+                                    }`}
                                 >
-                                    <div className="modal-dialog">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <h1
-                                                    className="modal-title fs-5"
-                                                    id={`modalLabel-${id}`}
+                                    <div className={style.modal}>
+                                        <div className={style.modalContent}>
+                                            <div className={style.modalHeader}>
+                                                <h2
+                                                    className={
+                                                        style.modalHeaderTitle
+                                                    }
                                                 >
-                                                    Order #{id}
-                                                </h1>
+                                                    Update Order #{id}
+                                                </h2>
                                                 <button
-                                                    type="button"
-                                                    className="btn-close"
-                                                    data-bs-dismiss="modal"
-                                                    aria-label="Close"
-                                                    onClick={() => reset()}
-                                                ></button>
+                                                    className={style.modalClose}
+                                                    onClick={() =>
+                                                        setIsModalOpen(false)
+                                                    }
+                                                >
+                                                    &times;
+                                                </button>
                                             </div>
-                                            <div className="modal-body">
-                                                <form>
+                                            <div className={style.modalBody}>
+                                                <form
+                                                    onSubmit={orderHandleSubmit(
+                                                        handleOrderUpdate
+                                                    )}
+                                                >
                                                     <div className={'mb-3'}>
                                                         <label
                                                             htmlFor="name"
@@ -201,14 +219,15 @@ const Order: FC<IProps> = ({ order }) => {
                                                             type="text"
                                                             className="form-control"
                                                             placeholder={'Name'}
-                                                            {...register(
+                                                            {...orderRegister(
                                                                 'name'
                                                             )}
                                                         />
-                                                        {errors.name && (
+                                                        {orderErrors.name && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors.name
+                                                                    orderErrors
+                                                                        .name
                                                                         .message
                                                                 }
                                                             </div>
@@ -228,14 +247,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                             placeholder={
                                                                 'Surname'
                                                             }
-                                                            {...register(
+                                                            {...orderRegister(
                                                                 'surname'
                                                             )}
                                                         />
-                                                        {errors.surname && (
+                                                        {orderErrors.surname && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors
+                                                                    orderErrors
                                                                         .surname
                                                                         .message
                                                                 }
@@ -256,14 +275,15 @@ const Order: FC<IProps> = ({ order }) => {
                                                             placeholder={
                                                                 'Email'
                                                             }
-                                                            {...register(
+                                                            {...orderRegister(
                                                                 'email'
                                                             )}
                                                         />
-                                                        {errors.email && (
+                                                        {orderErrors.email && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors.email
+                                                                    orderErrors
+                                                                        .email
                                                                         .message
                                                                 }
                                                             </div>
@@ -283,14 +303,15 @@ const Order: FC<IProps> = ({ order }) => {
                                                             placeholder={
                                                                 'Phone'
                                                             }
-                                                            {...register(
+                                                            {...orderRegister(
                                                                 'phone'
                                                             )}
                                                         />
-                                                        {errors.phone && (
+                                                        {orderErrors.phone && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors.phone
+                                                                    orderErrors
+                                                                        .phone
                                                                         .message
                                                                 }
                                                             </div>
@@ -308,12 +329,15 @@ const Order: FC<IProps> = ({ order }) => {
                                                             type="text"
                                                             className="form-control"
                                                             placeholder={'Age'}
-                                                            {...register('age')}
+                                                            {...orderRegister(
+                                                                'age'
+                                                            )}
                                                         />
-                                                        {errors.age && (
+                                                        {orderErrors.age && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors.age
+                                                                    orderErrors
+                                                                        .age
                                                                         .message
                                                                 }
                                                             </div>
@@ -331,12 +355,15 @@ const Order: FC<IProps> = ({ order }) => {
                                                             type="text"
                                                             className="form-control"
                                                             placeholder={'Sum'}
-                                                            {...register('sum')}
+                                                            {...orderRegister(
+                                                                'sum'
+                                                            )}
                                                         />
-                                                        {errors.sum && (
+                                                        {orderErrors.sum && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors.sum
+                                                                    orderErrors
+                                                                        .sum
                                                                         .message
                                                                 }
                                                             </div>
@@ -356,14 +383,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                             placeholder={
                                                                 'Already paid'
                                                             }
-                                                            {...register(
+                                                            {...orderRegister(
                                                                 'alreadyPaid'
                                                             )}
                                                         />
-                                                        {errors.alreadyPaid && (
+                                                        {orderErrors.alreadyPaid && (
                                                             <div className="form-text text-danger">
                                                                 {
-                                                                    errors
+                                                                    orderErrors
                                                                         .alreadyPaid
                                                                         .message
                                                                 }
@@ -412,7 +439,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                     handleOptionChange={
                                                                         handleDropdownChange
                                                                     }
-                                                                    selectValue={watch(
+                                                                    selectValue={orderWatch(
                                                                         'group_id'
                                                                     )}
                                                                     placeholder={
@@ -424,7 +451,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                     itemLabel={
                                                                         'name'
                                                                     }
-                                                                    register={register(
+                                                                    register={orderRegister(
                                                                         'group_id'
                                                                     )}
                                                                 />
@@ -468,10 +495,10 @@ const Order: FC<IProps> = ({ order }) => {
                                                                     Add group
                                                                 </button>
                                                             )}
-                                                            {errors.group_id && (
+                                                            {orderErrors.group_id && (
                                                                 <div className="form-text text-danger">
                                                                     {
-                                                                        errors
+                                                                        orderErrors
                                                                             .group_id
                                                                             .message
                                                                     }
@@ -492,7 +519,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 handleOptionChange={
                                                                     handleDropdownChange
                                                                 }
-                                                                selectValue={watch(
+                                                                selectValue={orderWatch(
                                                                     'status'
                                                                 )}
                                                                 placeholder={
@@ -502,14 +529,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 itemLabel={
                                                                     'status'
                                                                 }
-                                                                register={register(
+                                                                register={orderRegister(
                                                                     'status'
                                                                 )}
                                                             />
-                                                            {errors.status && (
+                                                            {orderErrors.status && (
                                                                 <div className="form-text text-danger">
                                                                     {
-                                                                        errors
+                                                                        orderErrors
                                                                             .status
                                                                             .message
                                                                     }
@@ -530,7 +557,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 handleOptionChange={
                                                                     handleDropdownChange
                                                                 }
-                                                                selectValue={watch(
+                                                                selectValue={orderWatch(
                                                                     'course'
                                                                 )}
                                                                 placeholder={
@@ -540,14 +567,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 itemLabel={
                                                                     'courseName'
                                                                 }
-                                                                register={register(
+                                                                register={orderRegister(
                                                                     'course'
                                                                 )}
                                                             />
-                                                            {errors.course && (
+                                                            {orderErrors.course && (
                                                                 <div className="form-text text-danger">
                                                                     {
-                                                                        errors
+                                                                        orderErrors
                                                                             .course
                                                                             .message
                                                                     }
@@ -570,7 +597,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 handleOptionChange={
                                                                     handleDropdownChange
                                                                 }
-                                                                selectValue={watch(
+                                                                selectValue={orderWatch(
                                                                     'course_format'
                                                                 )}
                                                                 placeholder={
@@ -580,14 +607,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 itemLabel={
                                                                     'format'
                                                                 }
-                                                                register={register(
+                                                                register={orderRegister(
                                                                     'course_format'
                                                                 )}
                                                             />
-                                                            {errors.course_format && (
+                                                            {orderErrors.course_format && (
                                                                 <div className="form-text text-danger">
                                                                     {
-                                                                        errors
+                                                                        orderErrors
                                                                             .course_format
                                                                             .message
                                                                     }
@@ -610,7 +637,7 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 handleOptionChange={
                                                                     handleDropdownChange
                                                                 }
-                                                                selectValue={watch(
+                                                                selectValue={orderWatch(
                                                                     'course_type'
                                                                 )}
                                                                 placeholder={
@@ -620,14 +647,14 @@ const Order: FC<IProps> = ({ order }) => {
                                                                 itemLabel={
                                                                     'type'
                                                                 }
-                                                                register={register(
+                                                                register={orderRegister(
                                                                     'course_type'
                                                                 )}
                                                             />
-                                                            {errors.course_type && (
+                                                            {orderErrors.course_type && (
                                                                 <div className="form-text text-danger">
                                                                     {
-                                                                        errors
+                                                                        orderErrors
                                                                             .course_type
                                                                             .message
                                                                     }
@@ -635,39 +662,43 @@ const Order: FC<IProps> = ({ order }) => {
                                                             )}
                                                         </>
                                                     }
+
+                                                    <div
+                                                        className={
+                                                            style.modalFooter
+                                                        }
+                                                    >
+                                                        <button
+                                                            className={
+                                                                style.button
+                                                            }
+                                                            onClick={() =>
+                                                                setIsModalOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            Close
+                                                        </button>
+                                                        <button
+                                                            type={'submit'}
+                                                            className={
+                                                                style.button
+                                                            }
+                                                        >
+                                                            Save Changes
+                                                        </button>
+                                                    </div>
                                                 </form>
-                                            </div>
-                                            <div className="modal-footer">
-                                                <button
-                                                    type="button"
-                                                    id={`closeBtn-${id}`}
-                                                    className="btn btn-secondary"
-                                                    data-bs-dismiss="modal"
-                                                    onClick={() => reset()}
-                                                >
-                                                    Close
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className={`${style.Button}`}
-                                                    onClick={handleSubmit(
-                                                        handleOrderUpdate
-                                                    )}
-                                                >
-                                                    Save changes
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                {/*end*/}
-                                {
-                                    <Comments
-                                        comments={comments}
-                                        orderId={id}
-                                        managerName={manager_name}
-                                    />
-                                }
+                                <Comments
+                                    comments={comments}
+                                    orderId={id}
+                                    managerName={manager_name}
+                                />
                             </div>
                         </div>
                     </td>
