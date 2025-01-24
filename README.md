@@ -1,3 +1,33 @@
+# CRM Programming School
+
+CRM Programming School is a web application designed to manage student enrollments and administrative tasks for a programming school. It offers robust functionality for user authentication, role-based access control, and detailed management of enrollments and comments.
+
+## Key Features
+
+1. User Authentication and Role Management:
+Implements secure JWT-based authentication and role-based access control for administrators and managers.
+2.  Enrollment Management:
+Enables creating, updating, deleting, and retrieving student enrollments with relevant filtering options.
+3. Comments System:
+Supports adding and managing comments for each enrollment, allowing better collaboration and tracking.
+4. Swagger API Documentation:
+Provides detailed and interactive API documentation via Swagger for easy testing and integration.
+5. Data Validation and Error Handling:
+Ensures data integrity with advanced input validation and comprehensive error handling.
+
+## Technologies Used
+- NestJS
+- TypeORM
+- MySQL
+- Redis
+- TypeScript
+- JWT
+- Swagger
+- ReactJS
+- Redux
+- Bootstrap
+- CSS
+
 
 # Project Setup Instructions
 
@@ -7,6 +37,7 @@
 - Docker Desktop is running on your computer
 
 ## Running the app
+
 ### Backend Setup
 
 ```bash
