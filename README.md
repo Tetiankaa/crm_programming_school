@@ -79,3 +79,7 @@ This project includes API documentation generated with Swagger. Once the applica
 - Explore Endpoints: Browse all available API endpoints, view request parameters, response schemas, and possible HTTP status codes.
 - Test Endpoints: Use the interactive interface to send requests directly to the API from your browser.
 - Authorization: You can input a JWT token within the Swagger UI to test protected endpoints.
+
+## Default Login Credentials (For Testing Only)
+- **Email:** admin@gmail.com  
+- **Password:** admin
